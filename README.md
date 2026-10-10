@@ -4,6 +4,8 @@ Plataforma de gestão de heróis: cadastre, liste, edite, desative e reative her
 
 > 🚧 Projeto em construção. Este README é atualizado a cada etapa.
 
+![Listagem de heróis do Hero Forge](docs/media/banner.webp)
+
 ## Stack
 
 | Camada         | Tecnologia                                   |
@@ -24,6 +26,39 @@ Plataforma de gestão de heróis: cadastre, liste, edite, desative e reative her
 - **Arquitetura em camadas** (domínio, casos de uso, infraestrutura, apresentação) com inversão de dependência, erros de domínio padronizados e documentação Swagger.
 - **Testes** unitários e de integração na API (contra MySQL real) e testes de componente no front com MSW.
 
+## Demonstração
+
+### Sugerir herói com IA
+
+A partir de uma ideia opcional, um LLM gera os dados e a história do herói, e um modelo de imagem cria o avatar. Tudo preenche o formulário para revisão antes de salvar.
+
+![Sugestão de herói com IA](docs/media/ia-sugestao.gif)
+
+### Criação de herói com upload do avatar
+
+![Criação de herói](docs/media/fluxo-criacao.gif)
+
+### Telas
+
+| Listagem (10 por página, 5 por linha) | Filtro por status |
+| --- | --- |
+| ![Listagem com paginação](docs/media/listagem.webp) | ![Filtro de inativos](docs/media/filtro-inativos.webp) |
+| **Criação com prévia ao vivo** | **Validação do formulário** |
+| ![Modal de criação](docs/media/criacao.webp) | ![Validação](docs/media/validacao.webp) |
+| **Detalhes do herói** | **Limite diário da IA** |
+| ![Detalhes](docs/media/detalhes.webp) | ![Limite da IA](docs/media/ia-limite.webp) |
+
+**Excluir e reativar:** a exclusão pede confirmação e deixa o herói inativo, em cinza. No herói inativo, "Ativar" substitui "Excluir" e a edição fica bloqueada.
+
+<table>
+  <tr>
+    <td align="center"><img src="docs/media/acoes.webp" alt="Menu de ações" width="180"><br><sub>Ações</sub></td>
+    <td align="center"><img src="docs/media/confirmar-exclusao.webp" alt="Confirmação de exclusão" width="260"><br><sub>Confirmação</sub></td>
+    <td align="center"><img src="docs/media/inativo.webp" alt="Herói inativo em cinza" width="180"><br><sub>Inativo</sub></td>
+    <td align="center"><img src="docs/media/inativo-ativar.webp" alt="Opção Ativar" width="180"><br><sub>Ativar</sub></td>
+  </tr>
+</table>
+
 ## Estrutura do repositório
 
 ```
@@ -33,6 +68,7 @@ hero-forge/
 │   └── web/            # Front-end (React + Vite) + Dockerfile e nginx.conf
 ├── docker/
 │   └── mysql/init/     # Scripts executados na primeira subida do MySQL
+├── docs/media/         # Capturas de tela e GIFs do README
 ├── docker-compose.yml  # MySQL, API e front
 └── package.json        # npm workspaces
 ```

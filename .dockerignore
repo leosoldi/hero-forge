@@ -16,3 +16,4 @@ apps/api/storage
 .vscode
 **/*.log
 docker
+docs

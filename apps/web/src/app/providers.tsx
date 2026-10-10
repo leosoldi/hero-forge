@@ -8,9 +8,14 @@ import { cssVariablesResolver, theme } from './theme';
 interface ProvidersProps {
   children: ReactNode;
   queryClient?: QueryClient;
+  env?: 'default' | 'test';
 }
 
-export function Providers({ children, queryClient }: ProvidersProps) {
+export function Providers({
+  children,
+  queryClient,
+  env = 'default',
+}: ProvidersProps) {
   const [client] = useState(() => queryClient ?? createQueryClient());
 
   return (
@@ -20,6 +25,7 @@ export function Providers({ children, queryClient }: ProvidersProps) {
         cssVariablesResolver={cssVariablesResolver}
         defaultColorScheme="dark"
         forceColorScheme="dark"
+        env={env}
       >
         <Notifications position="top-right" limit={4} />
         {children}

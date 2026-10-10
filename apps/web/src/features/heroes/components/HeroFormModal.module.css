@@ -1,0 +1,83 @@
+.eyebrow {
+  font-family: var(--mantine-font-family-monospace);
+  font-size: var(--mantine-font-size-xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mantine-color-ember-4);
+}
+
+.title {
+  font-family: var(--mantine-font-family-headings);
+  font-size: 34px;
+  font-weight: 900;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--mantine-spacing-xl);
+}
+
+@media (min-width: $mantine-breakpoint-sm) {
+  .layout {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  }
+}
+
+.preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-sm);
+  padding: var(--mantine-spacing-md);
+  border: 1px dashed var(--mantine-color-dark-4);
+  border-radius: var(--mantine-radius-lg);
+  background: var(--mantine-color-dark-8);
+}
+
+.previewLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mantine-font-family-monospace);
+  font-size: var(--mantine-font-size-xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mantine-color-dimmed);
+}
+
+.liveDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--mantine-color-ember-6);
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.previewCard {
+  width: 100%;
+  max-width: 260px;
+  margin: 0 auto;
+  pointer-events: none;
+}
+
+.readOnly {
+  margin-top: var(--mantine-spacing-xs);
+  padding: var(--mantine-spacing-sm);
+  border-radius: var(--mantine-radius-md);
+  background: var(--mantine-color-dark-8);
+}
+
+.readOnlyTitle {
+  margin-bottom: var(--mantine-spacing-xs);
+  font-size: var(--mantine-font-size-xs);
+  font-weight: 600;
+  color: var(--mantine-color-dimmed);
+}

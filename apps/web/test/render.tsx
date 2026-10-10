@@ -15,7 +15,9 @@ export function renderWithProviders(
 
   return render(ui, {
     wrapper: ({ children }) => (
-      <Providers queryClient={queryClient}>{children}</Providers>
+      <Providers queryClient={queryClient} env="test">
+        {children}
+      </Providers>
     ),
     ...options,
   });

@@ -18,11 +18,19 @@ import {
 import { useState } from 'react';
 import { EmptyState } from '../../../shared/ui/EmptyState';
 import { useHeroesQuery } from '../api/heroes.queries';
+import { HeroActionsMenu } from '../components/HeroActionsMenu';
 import { HeroCard } from '../components/HeroCard';
 import { HeroCardSkeleton } from '../components/HeroCardSkeleton';
 import { HEROES_PER_PAGE, HeroGrid } from '../components/HeroGrid';
 import { HeroesPagination, ResultsRange } from '../components/HeroesPagination';
+import { HeroDetailsModal } from '../components/HeroDetailsModal';
+import { HeroFormModal } from '../components/HeroFormModal';
 import { HeroSearch } from '../components/HeroSearch';
+import {
+  ActivateHeroDialog,
+  DeactivateHeroDialog,
+} from '../components/HeroStatusDialogs';
+import { dialogHero, useHeroDialogs } from '../hooks/use-hero-dialogs';
 import classes from './HeroesPage.module.css';
 
 const SEARCH_DEBOUNCE_MS = 350;
@@ -43,6 +51,8 @@ export function HeroesPage() {
   });
 
   const heroes = data?.data ?? [];
+  const dialogs = useHeroDialogs();
+  const { dialog } = dialogs;
 
   return (
     <Container size="xl" component="main" py={56}>
@@ -58,7 +68,11 @@ export function HeroesPage() {
             </Text>
           </Stack>
 
-          <Button size="lg" leftSection={<IconPlus size={20} />} disabled>
+          <Button
+            size="lg"
+            leftSection={<IconPlus size={20} />}
+            onClick={dialogs.openCreate}
+          >
             Forjar herói
           </Button>
         </Group>
@@ -112,6 +126,11 @@ export function HeroesPage() {
               icon={<IconShieldPlus size={32} />}
               title="Nenhum herói forjado ainda"
               description="Comece criando o primeiro herói do seu universo."
+              action={
+                <Button variant="light" onClick={dialogs.openCreate}>
+                  Forjar o primeiro herói
+                </Button>
+              }
             />
           ))}
 
@@ -122,7 +141,19 @@ export function HeroesPage() {
           >
             <HeroGrid>
               {heroes.map((hero) => (
-                <HeroCard key={hero.id} hero={hero} />
+                <HeroCard
+                  key={hero.id}
+                  hero={hero}
+                  onOpen={dialogs.openDetails}
+                  actions={
+                    <HeroActionsMenu
+                      hero={hero}
+                      onEdit={dialogs.openEdit}
+                      onDelete={dialogs.openDeactivate}
+                      onActivate={dialogs.openActivate}
+                    />
+                  }
+                />
               ))}
             </HeroGrid>
           </Box>
@@ -130,6 +161,25 @@ export function HeroesPage() {
 
         {data && <HeroesPagination meta={data.meta} onChange={setPage} />}
       </Stack>
+
+      <HeroFormModal
+        opened={dialog?.type === 'create' || dialog?.type === 'edit'}
+        hero={dialogHero(dialog, 'edit')}
+        onClose={dialogs.close}
+      />
+      <HeroDetailsModal
+        hero={dialogHero(dialog, 'details')}
+        onClose={dialogs.close}
+        onEdit={dialogs.openEdit}
+      />
+      <DeactivateHeroDialog
+        hero={dialogHero(dialog, 'deactivate')}
+        onClose={dialogs.close}
+      />
+      <ActivateHeroDialog
+        hero={dialogHero(dialog, 'activate')}
+        onClose={dialogs.close}
+      />
     </Container>
   );
 }

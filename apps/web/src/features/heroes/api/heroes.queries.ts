@@ -1,5 +1,10 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import type { ListHeroesParams } from '../types';
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
+import type { Hero, HeroInput, ListHeroesParams } from '../types';
 import { heroesApi } from './heroes.api';
 
 export const heroKeys = {
@@ -17,3 +22,41 @@ export function useHeroesQuery(params: ListHeroesParams) {
     placeholderData: keepPreviousData,
   });
 }
+
+export function useHeroQuery(hero: Hero | null) {
+  return useQuery({
+    queryKey: heroKeys.detail(hero?.id ?? ''),
+    queryFn: ({ signal }) => heroesApi.get(hero!.id, signal),
+    enabled: Boolean(hero),
+    placeholderData: hero ?? undefined,
+    staleTime: 0,
+  });
+}
+
+function useHeroMutation<TVariables>(
+  mutationFn: (variables: TVariables) => Promise<Hero>,
+) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn,
+    onSuccess: async (hero) => {
+      queryClient.setQueryData(heroKeys.detail(hero.id), hero);
+      await queryClient.invalidateQueries({ queryKey: heroKeys.lists() });
+    },
+  });
+}
+
+export const useCreateHero = () =>
+  useHeroMutation((input: HeroInput) => heroesApi.create(input));
+
+export const useUpdateHero = () =>
+  useHeroMutation(({ id, input }: { id: string; input: HeroInput }) =>
+    heroesApi.update(id, input),
+  );
+
+export const useDeactivateHero = () =>
+  useHeroMutation((id: string) => heroesApi.deactivate(id));
+
+export const useActivateHero = () =>
+  useHeroMutation((id: string) => heroesApi.activate(id));

@@ -1,0 +1,61 @@
+.eyebrow {
+  font-family: var(--mantine-font-family-monospace);
+  font-size: var(--mantine-font-size-xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mantine-color-ember-4);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--mantine-spacing-xl);
+}
+
+@media (min-width: $mantine-breakpoint-sm) {
+  .layout {
+    grid-template-columns: 280px minmax(0, 1fr);
+  }
+}
+
+.portrait {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  max-width: 280px;
+  width: 100%;
+  margin: 0 auto;
+  border-radius: var(--mantine-radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--mantine-color-dark-5);
+}
+
+.avatar {
+  position: absolute;
+  inset: 0;
+}
+
+.nickname {
+  font-family: var(--mantine-font-family-headings);
+  font-size: clamp(40px, 6vw, 60px);
+  font-weight: 900;
+  line-height: 0.95;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.label {
+  font-family: var(--mantine-font-family-monospace);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mantine-color-dimmed);
+}
+
+.value {
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  padding-top: var(--mantine-spacing-md);
+  border-top: 1px solid var(--mantine-color-dark-5);
+}

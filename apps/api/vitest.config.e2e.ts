@@ -1,11 +1,17 @@
 import { defineConfig } from 'vitest/config';
-import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
-  plugins: [tsconfigPaths()],
+  resolve: { tsconfigPaths: true },
   test: {
     globals: true,
+    setupFiles: ['reflect-metadata'],
     root: './',
     include: ['**/*.e2e-spec.ts'],
+    env: {
+      NODE_ENV: 'test',
+      DB_DATABASE: 'hero_forge_test',
+    },
+    fileParallelism: false,
+    hookTimeout: 30_000,
   },
 });

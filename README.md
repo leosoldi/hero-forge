@@ -8,8 +8,8 @@ Plataforma de gestão de heróis: cadastre, liste, edite, desative e reative her
 
 | Camada         | Tecnologia                                   |
 | -------------- | -------------------------------------------- |
-| API            | Node.js 22, NestJS, TypeORM, Jest            |
-| Front-end      | React, Vite, TypeScript                      |
+| API            | Node.js 22, NestJS 12, TypeORM 1.x, Vitest   |
+| Front-end      | React, Vite, TypeScript, Vitest              |
 | Banco de dados | MySQL 8.4 (LTS) em Docker                    |
 
 ## Estrutura do repositório
@@ -57,10 +57,23 @@ Sobe o MySQL 8.4 na porta `3306` (configurável via `MYSQL_PORT`) com dois banco
 | `npm run db:logs`  | Acompanha os logs do MySQL                    |
 | `npm run db:reset` | Apaga o volume e recria o banco do zero       |
 
+### 3. API
+
+```bash
+npm install
+cp apps/api/.env.example apps/api/.env
+npm run api:dev
+```
+
+A API sobe em `http://localhost:3333`. Para conferir se ela está conectada ao banco: `GET http://localhost:3333/health`.
+
+Mais detalhes (variáveis de ambiente, scripts e endpoints) em [`apps/api/README.md`](apps/api/README.md).
+
 ## Roadmap
 
 - [x] Estrutura do monorepo e banco de dados em Docker
-- [ ] API: setup, domínio, casos de uso e persistência
+- [x] API: setup (configuração validada, conexão com o banco, health check)
+- [ ] API: domínio, casos de uso e persistência
 - [ ] API: endpoints REST, validação e tratamento de erros
 - [ ] API: documentação (Swagger) e testes
 - [ ] Front-end: listagem, busca, paginação e modais

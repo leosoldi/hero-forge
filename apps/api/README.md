@@ -52,16 +52,18 @@ Os testes de integração usam o banco `hero_forge_test`, isolado do banco de de
 
 Documentação interativa (Swagger): **http://localhost:3333/docs**. Há também exemplos prontos em [`requests.http`](requests.http) para a extensão REST Client do VS Code.
 
-| Método   | Rota                   | Descrição                                       | Sucesso |
-| -------- | ---------------------- | ----------------------------------------------- | ------- |
-| `GET`    | `/heroes`              | Lista paginada (`page`, `limit`, `search`)      | `200`   |
-| `GET`    | `/heroes/:id`          | Detalha um herói                                | `200`   |
-| `POST`   | `/heroes`              | Cria um herói                                   | `201`   |
-| `PUT`    | `/heroes/:id`          | Edita os campos editáveis de um herói ativo     | `200`   |
-| `DELETE` | `/heroes/:id`          | Exclusão lógica (o herói fica inativo)          | `200`   |
-| `PATCH`  | `/heroes/:id/activate` | Reativa um herói inativo                        | `200`   |
-| `POST`   | `/uploads/images`      | Envia uma imagem (campo `file`) e retorna a URL | `201`   |
-| `GET`    | `/health`              | Verifica se a API e o banco estão no ar         | `200`   |
+| Método   | Rota                     | Descrição                                       | Sucesso |
+| -------- | ------------------------ | ----------------------------------------------- | ------- |
+| `GET`    | `/heroes`                | Lista paginada (`page`, `limit`, `search`)      | `200`   |
+| `GET`    | `/heroes/:id`            | Detalha um herói                                | `200`   |
+| `POST`   | `/heroes`                | Cria um herói                                   | `201`   |
+| `PUT`    | `/heroes/:id`            | Edita os campos editáveis de um herói ativo     | `200`   |
+| `DELETE` | `/heroes/:id`            | Exclusão lógica (o herói fica inativo)          | `200`   |
+| `PATCH`  | `/heroes/:id/activate`   | Reativa um herói inativo                        | `200`   |
+| `POST`   | `/uploads/images`        | Envia uma imagem (campo `file`) e retorna a URL | `201`   |
+| `POST`   | `/hero-suggestions`      | Sugere um herói com IA generativa (não salva)   | `200`   |
+| `GET`    | `/hero-suggestions/info` | Provedor de IA ativo e limite diário            | `200`   |
+| `GET`    | `/health`                | Verifica se a API e o banco estão no ar         | `200`   |
 
 - A listagem retorna `{ data: [...], meta: { page, limit, total, total_pages } }`, dos mais recentes para os mais antigos. `limit` padrão: 10 (máximo 50).
 - Os campos `id`, `is_active`, `created_at` e `updated_at` não podem ser enviados pelo cliente: a requisição é rejeitada com `400`.
@@ -85,6 +87,9 @@ Documentação interativa (Swagger): **http://localhost:3333/docs**. Há também
   - `cloudflare`: [Workers AI](https://developers.cloudflare.com/workers-ai/), que tem cota gratuita diária e gera texto **e** imagem.
 - A resposta da IA é normalizada antes de sair da API (tamanhos máximos, data válida) e campos obrigatórios ausentes viram `503 AI_UNAVAILABLE`. Se só a imagem falhar, a sugestão volta com `avatar_url: null`.
 - A chave fica apenas na API, nunca no front.
+- `GET /hero-suggestions/info` informa o provedor ativo e o limite diário, usado pelo ícone de informação ao lado do botão no front:
+  - `demo`: `{ "provider": "demo", "daily_limit": null, "resets_at_utc": null }` (sem limite).
+  - `cloudflare`: `{ "provider": "cloudflare", "daily_limit": 100, "resets_at_utc": "00:00" }`. O plano gratuito dá 10.000 _neurons_ por dia, o que rende cerca de 100 sugestões completas (texto + imagem). A cota renova às 00:00 UTC (21h em Brasília). Se acabar, a API responde `503 AI_UNAVAILABLE` e o front mostra a mensagem de erro.
 
 **Ativando a IA real (gratuito):** crie uma conta em [dash.cloudflare.com](https://dash.cloudflare.com), vá em _AI → Workers AI → Use REST API_, copie o **Account ID** e crie um **API Token**. No `apps/api/.env`:
 

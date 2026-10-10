@@ -64,3 +64,11 @@ O cliente HTTP converte qualquer erro da API em um `ApiError` com o `code` retor
 - Heróis inativos ficam em escala de cinza, com o selo "Inativo".
 - Se o avatar não carregar, o card mostra a inicial do nome de guerra com a cor do universo.
 - Estados de carregamento (skeleton), atualização (lista esmaecida + loader), lista vazia, busca sem resultado e erro com "Tentar novamente".
+
+## Sugerir herói com IA
+
+No modal de criação, o painel "Sugerir herói com IA" aceita uma ideia opcional (ex.: "heroína do gelo que protege o Ártico") e chama `POST /api/hero-suggestions`.
+
+- A resposta preenche o formulário (nome, nome de guerra, data de nascimento, universo, habilidade e avatar) e mostra a história gerada. Nada é salvo: o usuário revisa, ajusta e só então cria o herói.
+- O ícone de informação ao lado do botão mostra, ao passar o mouse, o limite diário de gerações do provedor ativo (consultado em `GET /api/hero-suggestions/info`). No modo demonstração, avisa que não há limite.
+- Durante a geração, o botão fica em _loading_. Erros (por exemplo, cota da IA esgotada) aparecem como notificação.

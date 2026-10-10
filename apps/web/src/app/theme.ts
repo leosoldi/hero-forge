@@ -68,6 +68,7 @@ export const theme = createTheme({
     },
     Menu: { defaultProps: { radius: 'md', shadow: 'xl' } },
     Notification: { defaultProps: { radius: 'md' } },
+    Pagination: { defaultProps: { autoContrast: true } },
   },
 });
 

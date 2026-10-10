@@ -12,3 +12,11 @@
   line-height: 0.9;
   text-transform: uppercase;
 }
+
+.results {
+  transition: opacity 150ms ease;
+}
+
+.results[data-refreshing] {
+  opacity: 0.6;
+}

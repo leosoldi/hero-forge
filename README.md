@@ -88,7 +88,7 @@ A aplicação abre em `http://localhost:5173`. Mais detalhes em [`apps/web/READM
 - [x] API: endpoints REST, DTOs com validação, tratamento de erros e Swagger
 - [x] API: testes unitários e de integração
 - [x] Front-end: setup (tema, providers, cliente HTTP, layout)
-- [ ] Front-end: listagem, busca e paginação
+- [x] Front-end: listagem, busca e paginação
 - [ ] Front-end: modais de criação, edição, detalhes e confirmação
 - [ ] Dockerização completa
 - [ ] Extra: geração de avatar e contexto do herói com IA

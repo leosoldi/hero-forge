@@ -1,0 +1,14 @@
+.eyebrow {
+  font-family: var(--mantine-font-family-monospace);
+  font-size: var(--mantine-font-size-sm);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mantine-color-ember-4);
+}
+
+.title {
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-weight: 900;
+  line-height: 0.9;
+  text-transform: uppercase;
+}

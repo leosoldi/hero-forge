@@ -1,0 +1,8 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid var(--mantine-color-dark-5);
+  background: rgba(16, 14, 15, 0.85);
+  backdrop-filter: blur(12px);
+}

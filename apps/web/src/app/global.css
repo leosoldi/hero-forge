@@ -1,0 +1,22 @@
+@import '@fontsource-variable/big-shoulders-display';
+@import '@fontsource-variable/schibsted-grotesk';
+@import '@fontsource/jetbrains-mono/400';
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(
+      ellipse 80% 40% at 50% -10%,
+      rgba(255, 106, 43, 0.12),
+      transparent 70%
+    ),
+    var(--mantine-color-body);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: rgba(255, 106, 43, 0.35);
+  color: #f4eee7;
+}

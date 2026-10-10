@@ -9,7 +9,7 @@ Plataforma de gestão de heróis: cadastre, liste, edite, desative e reative her
 | Camada         | Tecnologia                                   |
 | -------------- | -------------------------------------------- |
 | API            | Node.js 22, NestJS 12, TypeORM 1.x, Vitest   |
-| Front-end      | React, Vite, TypeScript, Vitest              |
+| Front-end      | React 19, Vite, TypeScript, Mantine, TanStack Query, Vitest |
 | Banco de dados | MySQL 8.4 (LTS) em Docker                    |
 
 ## Estrutura do repositório
@@ -69,6 +69,16 @@ A API sobe em `http://localhost:3333` e a documentação interativa (Swagger) fi
 
 Mais detalhes (variáveis de ambiente, scripts e endpoints) em [`apps/api/README.md`](apps/api/README.md).
 
+### 4. Front-end
+
+Em outro terminal, com a API rodando:
+
+```bash
+npm run web:dev
+```
+
+A aplicação abre em `http://localhost:5173`. Mais detalhes em [`apps/web/README.md`](apps/web/README.md).
+
 ## Roadmap
 
 - [x] Estrutura do monorepo e banco de dados em Docker
@@ -77,6 +87,8 @@ Mais detalhes (variáveis de ambiente, scripts e endpoints) em [`apps/api/README
 - [x] API: repositório e casos de uso
 - [x] API: endpoints REST, DTOs com validação, tratamento de erros e Swagger
 - [x] API: testes unitários e de integração
-- [ ] Front-end: listagem, busca, paginação e modais
+- [x] Front-end: setup (tema, providers, cliente HTTP, layout)
+- [ ] Front-end: listagem, busca e paginação
+- [ ] Front-end: modais de criação, edição, detalhes e confirmação
 - [ ] Dockerização completa
 - [ ] Extra: geração de avatar e contexto do herói com IA

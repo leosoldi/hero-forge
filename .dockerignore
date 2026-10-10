@@ -1,0 +1,18 @@
+# Dependências e saídas de build são geradas dentro da imagem
+**/node_modules
+**/dist
+**/coverage
+**/*.tsbuildinfo
+
+# Segredos e arquivos locais nunca entram na imagem
+**/.env
+**/.env.*
+!**/.env.example
+apps/api/storage
+
+# Ferramentas e controle de versão
+.git
+.ref
+.vscode
+**/*.log
+docker

@@ -6,10 +6,10 @@ services:
     container_name: hero-forge-mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-hero_forge}
+      MYSQL_USER: ${MYSQL_USER:-hero_forge}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-hero_forge}
       TZ: UTC
     command:
       - --character-set-server=utf8mb4
@@ -27,5 +27,61 @@ services:
       retries: 20
       start_period: 20s
 
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    image: hero-forge-api
+    container_name: hero-forge-api
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    # Reaproveita as chaves da IA do .env da API, se existir. Sem ele, a IA roda em modo demonstração.
+    env_file:
+      - path: apps/api/.env
+        required: false
+    # Valores do ambiente Docker: têm prioridade sobre o env_file
+    environment:
+      NODE_ENV: production
+      PORT: 3333
+      CORS_ORIGIN: http://localhost:${WEB_PORT:-8080}
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USERNAME: ${MYSQL_USER:-hero_forge}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-hero_forge}
+      DB_DATABASE: ${MYSQL_DATABASE:-hero_forge}
+      UPLOADS_DIR: storage/uploads
+      PUBLIC_UPLOADS_URL: http://localhost:${API_PORT:-3333}/uploads
+    ports:
+      - "${API_PORT:-3333}:3333"
+    volumes:
+      - uploads_data:/app/apps/api/storage/uploads
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3333/health > /dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    image: hero-forge-web
+    container_name: hero-forge-web
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/ > /dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 volumes:
   mysql_data:
+  uploads_data:

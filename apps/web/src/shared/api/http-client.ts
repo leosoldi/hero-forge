@@ -20,13 +20,7 @@ export async function request<T>(
   let response: Response;
 
   try {
-    response = await fetch(url, {
-      method,
-      signal,
-      headers:
-        body === undefined ? undefined : { 'Content-Type': 'application/json' },
-      body: body === undefined ? undefined : JSON.stringify(body),
-    });
+    response = await fetch(url, { method, signal, ...encodeBody(body) });
   } catch (error) {
     if (error instanceof DOMException && error.name === 'AbortError') {
       throw error;
@@ -59,6 +53,16 @@ export const httpClient = {
     request<T>(path, { method: 'PATCH', body }),
   delete: <T>(path: string) => request<T>(path, { method: 'DELETE' }),
 };
+
+function encodeBody(body: unknown): Pick<RequestInit, 'body' | 'headers'> {
+  if (body === undefined) return {};
+  if (body instanceof FormData) return { body };
+
+  return {
+    body: JSON.stringify(body),
+    headers: { 'Content-Type': 'application/json' },
+  };
+}
 
 function buildUrl(path: string, query: RequestOptions['query']): URL {
   const url = new URL(`${API_BASE_PATH}${path}`, window.location.origin);

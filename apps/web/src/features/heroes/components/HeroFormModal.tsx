@@ -16,6 +16,7 @@ import {
   useForm,
   useWatch,
 } from 'react-hook-form';
+import { useState } from 'react';
 import { ApiError } from '../../../shared/api/api-error';
 import { getErrorMessage } from '../../../shared/api/error-messages';
 import {
@@ -34,6 +35,7 @@ import {
   type HeroFormValues,
 } from '../lib/hero-form.schema';
 import type { Hero } from '../types';
+import { AvatarField } from './AvatarField';
 import { HeroCard } from './HeroCard';
 import classes from './HeroFormModal.module.css';
 
@@ -133,6 +135,7 @@ function HeroForm({ hero, isSaving, onCancel, onSubmit }: HeroFormProps) {
     mode: 'onTouched',
   });
 
+  const [uploading, setUploading] = useState(false);
   const values = useWatch({ control: form.control });
   const { errors } = form.formState;
 
@@ -204,14 +207,17 @@ function HeroForm({ hero, isSaving, onCancel, onSubmit }: HeroFormProps) {
             error={errors.main_power?.message}
             {...form.register('main_power')}
           />
-          <TextInput
-            label="Avatar"
-            placeholder="https://..."
-            description="URL de uma imagem (http ou https)"
-            withAsterisk
-            maxLength={HERO_LIMITS.avatar_url}
+          <AvatarField
+            registration={form.register('avatar_url')}
             error={errors.avatar_url?.message}
-            {...form.register('avatar_url')}
+            maxLength={HERO_LIMITS.avatar_url}
+            onUploadingChange={setUploading}
+            onUploaded={(url) =>
+              form.setValue('avatar_url', url, {
+                shouldValidate: true,
+                shouldDirty: true,
+              })
+            }
           />
 
           {hero && <ReadOnlyDetails hero={hero} />}
@@ -234,7 +240,7 @@ function HeroForm({ hero, isSaving, onCancel, onSubmit }: HeroFormProps) {
         <Button variant="default" onClick={onCancel} disabled={isSaving}>
           Cancelar
         </Button>
-        <Button type="submit" loading={isSaving}>
+        <Button type="submit" loading={isSaving} disabled={uploading}>
           {hero ? 'Salvar alterações' : 'Forjar herói'}
         </Button>
       </Group>

@@ -46,6 +46,25 @@ describe('httpClient', () => {
     expect(receivedBody).toEqual({ nickname: 'Hulk' });
   });
 
+  it('sends FormData as multipart, without forcing a JSON content type', async () => {
+    let contentType: string | null = null;
+    let hasFile = false;
+    server.use(
+      http.post('/api/uploads/images', async ({ request }) => {
+        contentType = request.headers.get('content-type');
+        hasFile = (await request.formData()).has('file');
+        return HttpResponse.json({ url: 'http://x/a.png' }, { status: 201 });
+      }),
+    );
+    const body = new FormData();
+    body.append('file', new File(['img'], 'avatar.png', { type: 'image/png' }));
+
+    await httpClient.post('/uploads/images', body);
+
+    expect(contentType).toMatch(/^multipart\/form-data/);
+    expect(hasFile).toBe(true);
+  });
+
   it('turns API errors into ApiError with code and details', async () => {
     server.use(
       http.post('/api/heroes', () =>

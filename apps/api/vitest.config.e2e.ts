@@ -11,6 +11,7 @@ export default defineConfig({
       NODE_ENV: 'test',
       DB_DATABASE: 'hero_forge_test',
       TZ: 'America/Sao_Paulo',
+      UPLOADS_DIR: 'storage/test-uploads',
     },
     fileParallelism: false,
     hookTimeout: 30_000,

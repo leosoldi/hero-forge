@@ -28,3 +28,6 @@ Thumbs.db
 
 # Local references (not versioned)
 .ref/
+
+# Uploaded files (local storage)
+storage/

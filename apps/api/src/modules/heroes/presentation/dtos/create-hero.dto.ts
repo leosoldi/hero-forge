@@ -59,7 +59,11 @@ export class CreateHeroDto {
       'https://cdn.pixabay.com/photo/2024/05/07/00/59/hulk-8744607_1280.jpg',
     maxLength: HERO_CONSTRAINTS.AVATAR_URL_MAX_LENGTH,
   })
-  @IsUrl({ protocols: ['http', 'https'], require_protocol: true })
+  @IsUrl({
+    protocols: ['http', 'https'],
+    require_protocol: true,
+    require_tld: false,
+  })
   @MaxLength(HERO_CONSTRAINTS.AVATAR_URL_MAX_LENGTH)
   avatar_url: string;
 

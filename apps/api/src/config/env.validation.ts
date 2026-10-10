@@ -5,6 +5,7 @@ import {
   IsInt,
   IsNotEmpty,
   IsString,
+  IsUrl,
   Max,
   Min,
   validateSync,
@@ -60,6 +61,13 @@ export class EnvironmentVariables {
   @Transform(toBoolean)
   @IsBoolean()
   DB_LOGGING: boolean = false;
+
+  @IsString()
+  @IsNotEmpty()
+  UPLOADS_DIR: string = 'storage/uploads';
+
+  @IsUrl({ require_tld: false, require_protocol: true })
+  PUBLIC_UPLOADS_URL: string = 'http://localhost:3333/uploads';
 }
 
 export function validateEnv(

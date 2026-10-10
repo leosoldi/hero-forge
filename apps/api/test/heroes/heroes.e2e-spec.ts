@@ -68,6 +68,16 @@ describe('Heroes (e2e)', () => {
       expect(hero.date_of_birth).toBe('1962-04-10 00:00:00');
     });
 
+    it('accepts avatars served by the API itself (uploads on localhost)', async () => {
+      const hero = await createHero({
+        avatar_url: 'http://localhost:3333/uploads/0b9d6c1e-avatar.png',
+      });
+
+      expect(hero.avatar_url).toBe(
+        'http://localhost:3333/uploads/0b9d6c1e-avatar.png',
+      );
+    });
+
     it('rejects invalid fields with the list of problems', async () => {
       const response = await http()
         .post('/heroes')

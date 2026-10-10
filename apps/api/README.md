@@ -8,32 +8,34 @@ API REST do Hero Forge, construída com NestJS, TypeORM e MySQL.
 cp .env.example .env
 ```
 
-| Variável      | Padrão                  | Descrição                                   |
-| ------------- | ----------------------- | ------------------------------------------- |
-| `NODE_ENV`    | `development`           | `development`, `test` ou `production`       |
-| `PORT`        | `3333`                  | Porta HTTP da API                           |
-| `CORS_ORIGIN` | `http://localhost:5173` | Origem liberada para o front-end            |
-| `DB_HOST`     | —                       | Host do MySQL                               |
-| `DB_PORT`     | `3306`                  | Porta do MySQL                              |
-| `DB_USERNAME` | —                       | Usuário do banco                            |
-| `DB_PASSWORD` | —                       | Senha do banco                              |
-| `DB_DATABASE` | —                       | Nome do banco                               |
-| `DB_LOGGING`  | `false`                 | Exibe as queries SQL no console             |
+| Variável             | Padrão                          | Descrição                                            |
+| -------------------- | ------------------------------- | ---------------------------------------------------- |
+| `NODE_ENV`           | `development`                   | `development`, `test` ou `production`                |
+| `PORT`               | `3333`                          | Porta HTTP da API                                    |
+| `CORS_ORIGIN`        | `http://localhost:5173`         | Origem liberada para o front-end                     |
+| `DB_HOST`            | —                               | Host do MySQL                                        |
+| `DB_PORT`            | `3306`                          | Porta do MySQL                                       |
+| `DB_USERNAME`        | —                               | Usuário do banco                                     |
+| `DB_PASSWORD`        | —                               | Senha do banco                                       |
+| `DB_DATABASE`        | —                               | Nome do banco                                        |
+| `DB_LOGGING`         | `false`                         | Exibe as queries SQL no console                      |
+| `UPLOADS_DIR`        | `storage/uploads`               | Pasta onde as imagens enviadas são gravadas          |
+| `PUBLIC_UPLOADS_URL` | `http://localhost:3333/uploads` | URL pública usada para montar o endereço das imagens |
 
 As variáveis são validadas na inicialização: se alguma estiver ausente ou inválida, a API não sobe e informa o motivo.
 
 ## Scripts
 
-| Script               | Descrição                                        |
-| -------------------- | ------------------------------------------------ |
-| `npm run start:dev`  | Sobe a API em modo watch                         |
-| `npm run build`      | Compila para `dist/`                             |
-| `npm run start:prod` | Executa a versão compilada                       |
-| `npm run lint`       | Análise estática com oxlint                      |
-| `npm run format`     | Formata o código com Prettier                    |
-| `npm test`           | Testes unitários (Vitest)                        |
-| `npm run test:cov`   | Testes unitários com cobertura                   |
-| `npm run test:e2e`   | Testes de integração (exige o MySQL rodando)     |
+| Script                     | Descrição                                      |
+| -------------------------- | ---------------------------------------------- |
+| `npm run start:dev`        | Sobe a API em modo watch                       |
+| `npm run build`            | Compila para `dist/`                           |
+| `npm run start:prod`       | Executa a versão compilada                     |
+| `npm run lint`             | Análise estática com oxlint                    |
+| `npm run format`           | Formata o código com Prettier                  |
+| `npm test`                 | Testes unitários (Vitest)                      |
+| `npm run test:cov`         | Testes unitários com cobertura                 |
+| `npm run test:e2e`         | Testes de integração (exige o MySQL rodando)   |
 | `npm run migration:show`   | Lista as migrations e quais já foram aplicadas |
 | `npm run migration:run`    | Aplica as migrations pendentes                 |
 | `npm run migration:revert` | Desfaz a última migration aplicada             |
@@ -45,19 +47,28 @@ Os testes de integração usam o banco `hero_forge_test`, isolado do banco de de
 
 Documentação interativa (Swagger): **http://localhost:3333/docs**. Há também exemplos prontos em [`requests.http`](requests.http) para a extensão REST Client do VS Code.
 
-| Método   | Rota                     | Descrição                                         | Sucesso |
-| -------- | ------------------------ | ------------------------------------------------- | ------- |
-| `GET`    | `/heroes`                | Lista paginada (`page`, `limit`, `search`)        | `200`   |
-| `GET`    | `/heroes/:id`            | Detalha um herói                                  | `200`   |
-| `POST`   | `/heroes`                | Cria um herói                                     | `201`   |
-| `PUT`    | `/heroes/:id`            | Edita os campos editáveis de um herói ativo       | `200`   |
-| `DELETE` | `/heroes/:id`            | Exclusão lógica (o herói fica inativo)            | `200`   |
-| `PATCH`  | `/heroes/:id/activate`   | Reativa um herói inativo                          | `200`   |
-| `GET`    | `/health`                | Verifica se a API e o banco estão no ar           | `200`   |
+| Método   | Rota                   | Descrição                                       | Sucesso |
+| -------- | ---------------------- | ----------------------------------------------- | ------- |
+| `GET`    | `/heroes`              | Lista paginada (`page`, `limit`, `search`)      | `200`   |
+| `GET`    | `/heroes/:id`          | Detalha um herói                                | `200`   |
+| `POST`   | `/heroes`              | Cria um herói                                   | `201`   |
+| `PUT`    | `/heroes/:id`          | Edita os campos editáveis de um herói ativo     | `200`   |
+| `DELETE` | `/heroes/:id`          | Exclusão lógica (o herói fica inativo)          | `200`   |
+| `PATCH`  | `/heroes/:id/activate` | Reativa um herói inativo                        | `200`   |
+| `POST`   | `/uploads/images`      | Envia uma imagem (campo `file`) e retorna a URL | `201`   |
+| `GET`    | `/health`              | Verifica se a API e o banco estão no ar         | `200`   |
 
 - A listagem retorna `{ data: [...], meta: { page, limit, total, total_pages } }`, dos mais recentes para os mais antigos. `limit` padrão: 10 (máximo 50).
 - Os campos `id`, `is_active`, `created_at` e `updated_at` não podem ser enviados pelo cliente: a requisição é rejeitada com `400`.
 - `date_of_birth` é aceito como `YYYY-MM-DD` ou `YYYY-MM-DD 00:00:00` e validado de forma estrita (`2026-02-31` é rejeitado).
+
+### Upload de imagens
+
+`POST /uploads/images` (multipart, campo `file`) aceita JPEG, PNG ou WebP de até 2 MB e responde `{ "url": "..." }`, que o front usa como `avatar_url`. O contrato do herói não muda.
+
+- O tipo é validado pelos **bytes do arquivo** (assinatura), não pela extensão nem pelo `Content-Type` informado pelo cliente. SVG não é aceito, porque pode conter scripts.
+- O arquivo é salvo com um nome aleatório (UUID), o que evita sobrescrita e nomes maliciosos.
+- O armazenamento fica atrás da porta `FileStorage`. Hoje a implementação é `LocalFileStorage` (disco, servido em `/uploads`); trocar por S3 é criar outro adapter e mudar uma linha no `UploadsModule`.
 
 ### Erros
 
@@ -71,13 +82,14 @@ Todos os erros seguem o mesmo formato:
 }
 ```
 
-| Status | `code`                                                          | Quando                                               |
-| ------ | --------------------------------------------------------------- | ---------------------------------------------------- |
-| `400`  | `VALIDATION_ERROR` (com `details` por campo), `BAD_REQUEST`     | Corpo, query ou id inválidos                         |
-| `404`  | `HERO_NOT_FOUND`, `NOT_FOUND`                                   | Herói ou rota inexistente                            |
-| `409`  | `HERO_INACTIVE`, `HERO_ALREADY_ACTIVE`, `HERO_ALREADY_INACTIVE` | Ação incompatível com o estado do herói              |
-| `422`  | `INVALID_HERO`                                                  | Regra de negócio violada (ex.: nascimento no futuro) |
-| `500`  | `INTERNAL_ERROR`                                                | Erro inesperado (detalhes só no log)                 |
+| Status | `code`                                                                       | Quando                                               |
+| ------ | ---------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `400`  | `VALIDATION_ERROR` (com `details` por campo), `BAD_REQUEST`, `FILE_REQUIRED` | Corpo, query, id ou arquivo inválidos                |
+| `404`  | `HERO_NOT_FOUND`, `NOT_FOUND`                                                | Herói ou rota inexistente                            |
+| `409`  | `HERO_INACTIVE`, `HERO_ALREADY_ACTIVE`, `HERO_ALREADY_INACTIVE`              | Ação incompatível com o estado do herói              |
+| `413`  | `PAYLOAD_TOO_LARGE`                                                          | Imagem acima de 2 MB                                 |
+| `422`  | `INVALID_HERO`, `INVALID_IMAGE`                                              | Regra de negócio violada ou arquivo que não é imagem |
+| `500`  | `INTERNAL_ERROR`                                                             | Erro inesperado (detalhes só no log)                 |
 
 ## Banco de dados
 
@@ -87,18 +99,18 @@ Ao iniciar, a API aplica automaticamente as migrations pendentes. Os comandos ac
 
 ### Tabela `heroes`
 
-| Coluna          | Tipo            | Observação                                  |
-| --------------- | --------------- | ------------------------------------------- |
-| `id`            | `char(36)`      | UUID v4 gerado pela aplicação               |
-| `name`          | `varchar(120)`  | Nome completo                               |
-| `nickname`      | `varchar(80)`   | Nome de guerra                              |
-| `date_of_birth` | `date`          | Data de nascimento                          |
-| `universe`      | `varchar(60)`   | Universo                                    |
-| `main_power`    | `varchar(120)`  | Habilidade principal                        |
-| `avatar_url`    | `varchar(2048)` | URL do avatar                               |
-| `is_active`     | `tinyint(1)`    | Exclusão lógica (`false` = excluído)        |
-| `created_at`    | `datetime(3)`   | UTC, com milissegundos; indexado            |
-| `updated_at`    | `datetime(3)`   | UTC, com milissegundos                      |
+| Coluna          | Tipo            | Observação                           |
+| --------------- | --------------- | ------------------------------------ |
+| `id`            | `char(36)`      | UUID v4 gerado pela aplicação        |
+| `name`          | `varchar(120)`  | Nome completo                        |
+| `nickname`      | `varchar(80)`   | Nome de guerra                       |
+| `date_of_birth` | `date`          | Data de nascimento                   |
+| `universe`      | `varchar(60)`   | Universo                             |
+| `main_power`    | `varchar(120)`  | Habilidade principal                 |
+| `avatar_url`    | `varchar(2048)` | URL do avatar                        |
+| `is_active`     | `tinyint(1)`    | Exclusão lógica (`false` = excluído) |
+| `created_at`    | `datetime(3)`   | UTC, com milissegundos; indexado     |
+| `updated_at`    | `datetime(3)`   | UTC, com milissegundos               |
 
 ## Arquitetura
 
@@ -112,6 +124,7 @@ src/
 │   └── presentation/    # Filtro global de erros, formato de datas e validadores
 └── modules/
     ├── health/          # GET /health
+    ├── uploads/         # Upload de imagens (porta FileStorage + armazenamento local)
     └── heroes/
         ├── domain/                       # Entidade Hero, regras de negócio e contrato do repositório
         ├── application/use-cases/        # Um caso de uso por ação (criar, listar, detalhar, editar, desativar, ativar)

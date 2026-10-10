@@ -18,7 +18,12 @@
     "test:watch": "vitest",
     "test:cov": "vitest run --coverage",
     "test:debug": "vitest --inspect-brk --no-file-parallelism",
-    "test:e2e": "vitest run --config ./vitest.config.e2e.ts"
+    "test:e2e": "vitest run --config ./vitest.config.e2e.ts",
+    "typeorm": "typeorm -d dist/database/data-source.js",
+    "migration:run": "nest build && npm run typeorm -- migration:run",
+    "migration:revert": "nest build && npm run typeorm -- migration:revert",
+    "migration:show": "nest build && npm run typeorm -- migration:show",
+    "schema:check": "nest build && npm run typeorm -- schema:log"
   },
   "dependencies": {
     "@nestjs/common": "^12.0.1",

@@ -34,8 +34,49 @@ As variáveis são validadas na inicialização: se alguma estiver ausente ou in
 | `npm test`           | Testes unitários (Vitest)                        |
 | `npm run test:cov`   | Testes unitários com cobertura                   |
 | `npm run test:e2e`   | Testes de integração (exige o MySQL rodando)     |
+| `npm run migration:show`   | Lista as migrations e quais já foram aplicadas |
+| `npm run migration:run`    | Aplica as migrations pendentes                 |
+| `npm run migration:revert` | Desfaz a última migration aplicada             |
+| `npm run schema:check`     | Compara entidades e banco (deve estar em dia)  |
 
 Os testes de integração usam o banco `hero_forge_test`, isolado do banco de desenvolvimento.
+
+## Banco de dados
+
+O schema é versionado por **migrations** (`src/database/migrations`). O `synchronize` do TypeORM fica desligado: nenhuma alteração de estrutura acontece sem uma migration.
+
+Ao iniciar, a API aplica automaticamente as migrations pendentes. Os comandos acima servem para inspecionar ou desfazer manualmente.
+
+### Tabela `heroes`
+
+| Coluna          | Tipo            | Observação                                  |
+| --------------- | --------------- | ------------------------------------------- |
+| `id`            | `char(36)`      | UUID v4 gerado pela aplicação               |
+| `name`          | `varchar(120)`  | Nome completo                               |
+| `nickname`      | `varchar(80)`   | Nome de guerra                              |
+| `date_of_birth` | `date`          | Data de nascimento                          |
+| `universe`      | `varchar(60)`   | Universo                                    |
+| `main_power`    | `varchar(120)`  | Habilidade principal                        |
+| `avatar_url`    | `varchar(2048)` | URL do avatar                               |
+| `is_active`     | `tinyint(1)`    | Exclusão lógica (`false` = excluído)        |
+| `created_at`    | `datetime(3)`   | UTC, com milissegundos; indexado            |
+| `updated_at`    | `datetime(3)`   | UTC, com milissegundos                      |
+
+## Arquitetura
+
+```
+src/
+├── config/              # Validação das variáveis de ambiente
+├── database/            # Conexão, data source da CLI e migrations
+├── shared/domain/       # Base dos erros de domínio
+└── modules/
+    ├── health/          # GET /health
+    └── heroes/
+        ├── domain/                       # Entidade Hero e regras de negócio (TypeScript puro)
+        └── infrastructure/persistence/   # Entidade do TypeORM e mapper domínio ⇄ banco
+```
+
+A entidade de domínio (`Hero`) não conhece o TypeORM nem o NestJS. A tradução entre ela e a tabela fica no `HeroMapper`.
 
 ## Endpoints
 

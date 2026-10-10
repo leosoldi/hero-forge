@@ -73,7 +73,8 @@ Mais detalhes (variáveis de ambiente, scripts e endpoints) em [`apps/api/README
 
 - [x] Estrutura do monorepo e banco de dados em Docker
 - [x] API: setup (configuração validada, conexão com o banco, health check)
-- [ ] API: domínio, casos de uso e persistência
+- [x] API: domínio do herói, entidade do banco e migration
+- [ ] API: repositório e casos de uso
 - [ ] API: endpoints REST, validação e tratamento de erros
 - [ ] API: documentação (Swagger) e testes
 - [ ] Front-end: listagem, busca, paginação e modais

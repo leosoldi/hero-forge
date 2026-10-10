@@ -170,6 +170,28 @@ describe('TypeOrmHeroRepository (integration)', () => {
       expect(underscore.total).toBe(0);
     });
 
+    it('filters by status when requested', async () => {
+      await repository.save(makeHero({ nickname: 'Ativo' }));
+      await repository.save(
+        makeHero({ nickname: 'Inativo' }, { active: false }),
+      );
+
+      const active = await repository.findMany({
+        page: 1,
+        limit: 10,
+        isActive: true,
+      });
+      const inactive = await repository.findMany({
+        page: 1,
+        limit: 10,
+        isActive: false,
+      });
+
+      expect(active.items.map((hero) => hero.nickname)).toEqual(['Ativo']);
+      expect(inactive.items.map((hero) => hero.nickname)).toEqual(['Inativo']);
+      expect(inactive.total).toBe(1);
+    });
+
     it('includes inactive heroes in the listing', async () => {
       await repository.save(makeHero({}, { active: false }));
 

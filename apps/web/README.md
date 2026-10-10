@@ -62,6 +62,7 @@ O cliente HTTP converte qualquer erro da API em um `ApiError` com o `code` retor
 - Grid responsivo: 5 cards por linha no desktop, 2 no celular. 10 heróis por página.
 - Busca por nome ou nome de guerra com _debounce_ (350 ms): a lista atualiza enquanto o usuário digita, sem disparar uma requisição por tecla. Ao buscar, a paginação volta para a página 1.
 - Heróis inativos ficam em escala de cinza, com o selo "Inativo".
+- Botões de filtro "Todos", "Ativos" e "Inativos" ao lado da busca. Os dois filtros se combinam, e mudar qualquer um volta para a página 1.
 - Se o avatar não carregar, o card mostra a inicial do nome de guerra com a cor do universo.
 - Estados de carregamento (skeleton), atualização (lista esmaecida + loader), lista vazia, busca sem resultado e erro com "Tentar novamente".
 

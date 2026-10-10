@@ -8,11 +8,22 @@ export const HERO_PAGINATION = {
   MAX_LIMIT: 50,
 } as const;
 
+export const HERO_STATUS_FILTERS = ['all', 'active', 'inactive'] as const;
+
+export type HeroStatusFilter = (typeof HERO_STATUS_FILTERS)[number];
+
 export interface ListHeroesInput {
   page?: number;
   limit?: number;
   search?: string;
+  status?: HeroStatusFilter;
 }
+
+const IS_ACTIVE_BY_STATUS: Record<HeroStatusFilter, boolean | undefined> = {
+  all: undefined,
+  active: true,
+  inactive: false,
+};
 
 export class ListHeroesUseCase {
   constructor(private readonly heroRepository: HeroRepository) {}
@@ -27,7 +38,8 @@ export class ListHeroesUseCase {
       Math.max(1, Math.trunc(input.limit ?? HERO_PAGINATION.DEFAULT_LIMIT)),
     );
     const search = input.search?.trim() || undefined;
+    const isActive = IS_ACTIVE_BY_STATUS[input.status ?? 'all'];
 
-    return this.heroRepository.findMany({ page, limit, search });
+    return this.heroRepository.findMany({ page, limit, search, isActive });
   }
 }

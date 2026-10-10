@@ -164,6 +164,39 @@ describe('Heroes (e2e)', () => {
       ).toEqual(['Wonder Woman']);
     });
 
+    it('filters by status, keeping the search', async () => {
+      await createHero({ name: 'Bruce Wayne', nickname: 'Batman' });
+      const robin = await createHero({
+        name: 'Dick Grayson',
+        nickname: 'Robin',
+      });
+      await createHero({ name: 'Diana Prince', nickname: 'Wonder Woman' });
+      await http().delete(`/heroes/${robin.id}`).expect(200);
+
+      const nicknames = async (query: string) => {
+        const response = await http().get(`/heroes?${query}`).expect(200);
+        return response.body.data
+          .map((hero: { nickname: string }) => hero.nickname)
+          .sort();
+      };
+
+      expect(await nicknames('status=active')).toEqual([
+        'Batman',
+        'Wonder Woman',
+      ]);
+      expect(await nicknames('status=inactive')).toEqual(['Robin']);
+      expect(await nicknames('status=all')).toHaveLength(3);
+      expect(await nicknames('status=active&search=i')).toEqual([
+        'Wonder Woman',
+      ]);
+    });
+
+    it('rejects an unknown status', async () => {
+      const response = await http().get('/heroes?status=deleted').expect(400);
+
+      expect(response.body.details[0].field).toBe('status');
+    });
+
     it('rejects invalid pagination parameters', async () => {
       const response = await http().get('/heroes?page=0&limit=500').expect(400);
 

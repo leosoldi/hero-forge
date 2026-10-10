@@ -26,28 +26,46 @@ import { HeroesPagination, ResultsRange } from '../components/HeroesPagination';
 import { HeroDetailsModal } from '../components/HeroDetailsModal';
 import { HeroFormModal } from '../components/HeroFormModal';
 import { HeroSearch } from '../components/HeroSearch';
+import { HeroStatusFilter } from '../components/HeroStatusFilter';
 import {
   ActivateHeroDialog,
   DeactivateHeroDialog,
 } from '../components/HeroStatusDialogs';
 import { dialogHero, useHeroDialogs } from '../hooks/use-hero-dialogs';
+import type { HeroStatusFilter as Status } from '../types';
 import classes from './HeroesPage.module.css';
 
 const SEARCH_DEBOUNCE_MS = 350;
 
+const EMPTY_FILTER_MESSAGES: Record<Status, string> = {
+  all: 'Nenhum herói',
+  active: 'Nenhum herói ativo',
+  inactive: 'Nenhum herói inativo',
+};
+
 export function HeroesPage() {
   const [searchInput, setSearchInput] = useState('');
   const [search] = useDebouncedValue(searchInput.trim(), SEARCH_DEBOUNCE_MS);
-  const [pagination, setPagination] = useState({ page: 1, search: '' });
+  const [status, setStatus] = useState<Status>('all');
 
-  const page = pagination.search === search ? pagination.page : 1;
+  // Mudar a busca ou o filtro volta para a página 1
+  const filtersKey = `${status}|${search}`;
+  const [pagination, setPagination] = useState({ page: 1, filtersKey });
+  const page = pagination.filtersKey === filtersKey ? pagination.page : 1;
   const setPage = (nextPage: number) =>
-    setPagination({ page: nextPage, search });
+    setPagination({ page: nextPage, filtersKey });
+
+  const isFiltered = Boolean(search) || status !== 'all';
+  const clearFilters = () => {
+    setSearchInput('');
+    setStatus('all');
+  };
 
   const { data, isPending, isError, isFetching, refetch } = useHeroesQuery({
     page,
     limit: HEROES_PER_PAGE,
     search: search || undefined,
+    status,
   });
 
   const heroes = data?.data ?? [];
@@ -78,7 +96,10 @@ export function HeroesPage() {
         </Group>
 
         <Group justify="space-between" gap="md" wrap="wrap">
-          <HeroSearch value={searchInput} onChange={setSearchInput} />
+          <Group gap="md" wrap="wrap" style={{ flex: '1 1 480px' }}>
+            <HeroSearch value={searchInput} onChange={setSearchInput} />
+            <HeroStatusFilter value={status} onChange={setStatus} />
+          </Group>
           <Group gap="md">
             {isFetching && !isPending && (
               <Loader size="sm" aria-label="Atualizando a lista" />
@@ -110,14 +131,18 @@ export function HeroesPage() {
 
         {data &&
           heroes.length === 0 &&
-          (search ? (
+          (isFiltered ? (
             <EmptyState
               icon={<IconSearchOff size={32} />}
               title="Nenhum herói encontrado"
-              description={`Nenhum nome ou nome de guerra corresponde a "${search}".`}
+              description={
+                search
+                  ? `${EMPTY_FILTER_MESSAGES[status]} com nome ou nome de guerra correspondente a "${search}".`
+                  : `${EMPTY_FILTER_MESSAGES[status]} por aqui.`
+              }
               action={
-                <Button variant="subtle" onClick={() => setSearchInput('')}>
-                  Limpar busca
+                <Button variant="subtle" onClick={clearFilters}>
+                  {status === 'all' ? 'Limpar busca' : 'Limpar filtros'}
                 </Button>
               }
             />

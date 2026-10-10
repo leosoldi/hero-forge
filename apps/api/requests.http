@@ -26,6 +26,9 @@ GET {{baseUrl}}/heroes?page=1&limit=10
 ### Buscar por nome ou nome de guerra
 GET {{baseUrl}}/heroes?search=hulk
 
+### Listar só os inativos (status: all, active ou inactive)
+GET {{baseUrl}}/heroes?status=inactive
+
 ### Detalhar herói
 GET {{baseUrl}}/heroes/{{heroId}}
 

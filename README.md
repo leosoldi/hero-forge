@@ -15,7 +15,7 @@ Plataforma de gestão de heróis: cadastre, liste, edite, desative e reative her
 
 ## Destaques
 
-- **CRUD completo de heróis** seguindo REST: listagem paginada (10 por página, 5 por linha) e ordenada pelos mais recentes, busca por nome ou nome de guerra, exclusão lógica com reativação, e bloqueio de edição de heróis inativos.
+- **CRUD completo de heróis** seguindo REST: listagem paginada (10 por página, 5 por linha) e ordenada pelos mais recentes, busca por nome ou nome de guerra, filtro por status (todos, ativos ou inativos), exclusão lógica com reativação, e bloqueio de edição de heróis inativos.
 - **Avatar por link ou upload**: a imagem enviada é validada pelos bytes do arquivo (JPEG, PNG ou WebP até 2 MB) e salva atrás de uma porta `FileStorage`, pronta para trocar o disco local por S3.
 - **Sugerir herói com IA** (extra): no modal de criação, um **LLM** gera nome, nome de guerra, data de nascimento, universo, habilidade e uma história, e um **modelo de imagem** gera o avatar. O formulário é preenchido para revisão; nada é salvo sem o usuário confirmar.
   - Funciona sem chave nenhuma no **modo demonstração** (padrão), para quem avalia testar na hora.

@@ -89,4 +89,31 @@ describe('ListHeroesUseCase', () => {
       search: undefined,
     });
   });
+
+  describe('status filter', () => {
+    beforeEach(async () => {
+      await repository.save(makeHero({ nickname: 'Ativo' }));
+      await repository.save(
+        makeHero({ nickname: 'Inativo' }, { active: false }),
+      );
+    });
+
+    it.each([
+      ['active', ['Ativo']],
+      ['inactive', ['Inativo']],
+    ] as const)('returns only %s heroes', async (status, expected) => {
+      const { items, total } = await useCase.execute({ status });
+
+      expect(items.map((hero) => hero.nickname)).toEqual(expected);
+      expect(total).toBe(1);
+    });
+
+    it('returns active and inactive heroes when the status is "all" or missing', async () => {
+      const all = await useCase.execute({ status: 'all' });
+      const missing = await useCase.execute();
+
+      expect(all.total).toBe(2);
+      expect(missing.total).toBe(2);
+    });
+  });
 });

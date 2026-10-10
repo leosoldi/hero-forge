@@ -119,6 +119,66 @@ describe('HeroesPage', () => {
     ).toBeInTheDocument();
   });
 
+  it('filters by status and goes back to the first page', async () => {
+    const calls = mockHeroesApi((params) => {
+      const page = Number(params.get('page'));
+      const heroes =
+        params.get('status') === 'inactive'
+          ? [buildHero({ nickname: 'Inativo', is_active: false })]
+          : [buildHero({ nickname: 'Hulk' })];
+      return HttpResponse.json(buildPage(heroes, { page, total: 15 }));
+    });
+
+    renderWithProviders(<HeroesPage />);
+    await screen.findByRole('heading', { name: 'Hulk' });
+    expect(calls[0].has('status')).toBe(false);
+    await userEvent.click(screen.getByRole('button', { name: 'Página 2' }));
+    await waitFor(() => expect(calls.at(-1)?.get('page')).toBe('2'));
+
+    await userEvent.click(screen.getByRole('radio', { name: 'Inativos' }));
+
+    expect(
+      await screen.findByRole('heading', { name: 'Inativo' }),
+    ).toBeInTheDocument();
+    expect(calls.at(-1)?.get('status')).toBe('inactive');
+    expect(calls.at(-1)?.get('page')).toBe('1');
+
+    await userEvent.click(screen.getByRole('radio', { name: 'Todos' }));
+
+    expect(
+      await screen.findByRole('heading', { name: 'Hulk' }),
+    ).toBeInTheDocument();
+    expect(calls.at(-1)?.has('status')).toBe(false);
+  });
+
+  it('explains when a status has no heroes and allows clearing the filters', async () => {
+    mockHeroesApi((params) =>
+      HttpResponse.json(
+        buildPage(
+          params.get('status') === 'inactive'
+            ? []
+            : [buildHero({ nickname: 'Hulk' })],
+        ),
+      ),
+    );
+
+    renderWithProviders(<HeroesPage />);
+    await screen.findByRole('heading', { name: 'Hulk' });
+    await userEvent.click(screen.getByRole('radio', { name: 'Inativos' }));
+
+    expect(
+      await screen.findByText('Nenhum herói inativo por aqui.'),
+    ).toBeInTheDocument();
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Limpar filtros' }),
+    );
+    expect(
+      await screen.findByRole('heading', { name: 'Hulk' }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('radio', { name: 'Todos' })).toBeChecked();
+  });
+
   it('shows an invitation when there are no heroes yet', async () => {
     mockHeroesApi(() => HttpResponse.json(buildPage([])));
 

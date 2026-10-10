@@ -21,10 +21,12 @@ export class InMemoryHeroRepository extends HeroRepository {
     page,
     limit,
     search,
+    isActive,
   }: FindHeroesParams): Promise<PaginatedResult<Hero>> {
     const term = search?.toLowerCase();
 
     const matches = [...this.heroes.values()]
+      .filter((hero) => isActive === undefined || hero.isActive === isActive)
       .filter(
         (hero) =>
           !term ||

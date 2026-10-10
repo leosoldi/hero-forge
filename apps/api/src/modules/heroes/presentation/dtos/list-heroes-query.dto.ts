@@ -1,6 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
+  IsIn,
   IsInt,
   IsOptional,
   IsString,
@@ -8,7 +9,11 @@ import {
   MaxLength,
   Min,
 } from 'class-validator';
-import { HERO_PAGINATION } from '../../application/use-cases/list-heroes.use-case.js';
+import {
+  HERO_PAGINATION,
+  HERO_STATUS_FILTERS,
+  type HeroStatusFilter,
+} from '../../application/use-cases/list-heroes.use-case.js';
 
 export class ListHeroesQueryDto {
   @ApiPropertyOptional({ minimum: 1, default: HERO_PAGINATION.DEFAULT_PAGE })
@@ -38,4 +43,13 @@ export class ListHeroesQueryDto {
   @IsString()
   @MaxLength(100)
   search?: string;
+
+  @ApiPropertyOptional({
+    description: 'Filtra pelo status do herói',
+    enum: HERO_STATUS_FILTERS,
+    default: 'all',
+  })
+  @IsOptional()
+  @IsIn(HERO_STATUS_FILTERS)
+  status?: HeroStatusFilter;
 }

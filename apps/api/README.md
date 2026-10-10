@@ -52,20 +52,21 @@ Os testes de integração usam o banco `hero_forge_test`, isolado do banco de de
 
 Documentação interativa (Swagger): **http://localhost:3333/docs**. Há também exemplos prontos em [`requests.http`](requests.http) para a extensão REST Client do VS Code.
 
-| Método   | Rota                     | Descrição                                       | Sucesso |
-| -------- | ------------------------ | ----------------------------------------------- | ------- |
-| `GET`    | `/heroes`                | Lista paginada (`page`, `limit`, `search`)      | `200`   |
-| `GET`    | `/heroes/:id`            | Detalha um herói                                | `200`   |
-| `POST`   | `/heroes`                | Cria um herói                                   | `201`   |
-| `PUT`    | `/heroes/:id`            | Edita os campos editáveis de um herói ativo     | `200`   |
-| `DELETE` | `/heroes/:id`            | Exclusão lógica (o herói fica inativo)          | `200`   |
-| `PATCH`  | `/heroes/:id/activate`   | Reativa um herói inativo                        | `200`   |
-| `POST`   | `/uploads/images`        | Envia uma imagem (campo `file`) e retorna a URL | `201`   |
-| `POST`   | `/hero-suggestions`      | Sugere um herói com IA generativa (não salva)   | `200`   |
-| `GET`    | `/hero-suggestions/info` | Provedor de IA ativo e limite diário            | `200`   |
-| `GET`    | `/health`                | Verifica se a API e o banco estão no ar         | `200`   |
+| Método   | Rota                     | Descrição                                            | Sucesso |
+| -------- | ------------------------ | ---------------------------------------------------- | ------- |
+| `GET`    | `/heroes`                | Lista paginada (`page`, `limit`, `search`, `status`) | `200`   |
+| `GET`    | `/heroes/:id`            | Detalha um herói                                     | `200`   |
+| `POST`   | `/heroes`                | Cria um herói                                        | `201`   |
+| `PUT`    | `/heroes/:id`            | Edita os campos editáveis de um herói ativo          | `200`   |
+| `DELETE` | `/heroes/:id`            | Exclusão lógica (o herói fica inativo)               | `200`   |
+| `PATCH`  | `/heroes/:id/activate`   | Reativa um herói inativo                             | `200`   |
+| `POST`   | `/uploads/images`        | Envia uma imagem (campo `file`) e retorna a URL      | `201`   |
+| `POST`   | `/hero-suggestions`      | Sugere um herói com IA generativa (não salva)        | `200`   |
+| `GET`    | `/hero-suggestions/info` | Provedor de IA ativo e limite diário                 | `200`   |
+| `GET`    | `/health`                | Verifica se a API e o banco estão no ar              | `200`   |
 
 - A listagem retorna `{ data: [...], meta: { page, limit, total, total_pages } }`, dos mais recentes para os mais antigos. `limit` padrão: 10 (máximo 50).
+- `status` filtra a listagem: `all` (padrão, ativos e inativos), `active` ou `inactive`. Pode ser combinado com `search`.
 - Os campos `id`, `is_active`, `created_at` e `updated_at` não podem ser enviados pelo cliente: a requisição é rejeitada com `400`.
 - `date_of_birth` é aceito como `YYYY-MM-DD` ou `YYYY-MM-DD 00:00:00` e validado de forma estrita (`2026-02-31` é rejeitado).
 

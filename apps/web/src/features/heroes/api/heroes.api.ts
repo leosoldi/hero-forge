@@ -11,7 +11,12 @@ import type {
 export const heroesApi = {
   list: (params: ListHeroesParams, signal?: AbortSignal) =>
     httpClient.get<PaginatedHeroes>('/heroes', {
-      query: { page: params.page, limit: params.limit, search: params.search },
+      query: {
+        page: params.page,
+        limit: params.limit,
+        search: params.search,
+        status: params.status === 'all' ? undefined : params.status,
+      },
       signal,
     }),
 

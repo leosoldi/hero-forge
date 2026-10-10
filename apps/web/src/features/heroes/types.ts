@@ -30,10 +30,13 @@ export interface PaginatedHeroes {
   meta: PaginationMeta;
 }
 
+export type HeroStatusFilter = 'all' | 'active' | 'inactive';
+
 export interface ListHeroesParams {
   page: number;
   limit: number;
   search?: string;
+  status?: HeroStatusFilter;
 }
 
 export type HeroSuggestion = Omit<HeroInput, 'avatar_url'> & {

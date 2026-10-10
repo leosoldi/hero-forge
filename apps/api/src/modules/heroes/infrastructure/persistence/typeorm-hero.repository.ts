@@ -33,6 +33,7 @@ export class TypeOrmHeroRepository extends HeroRepository {
     page,
     limit,
     search,
+    isActive,
   }: FindHeroesParams): Promise<PaginatedResult<Hero>> {
     const query = this.repository
       .createQueryBuilder('hero')
@@ -42,9 +43,13 @@ export class TypeOrmHeroRepository extends HeroRepository {
       .take(limit);
 
     if (search) {
-      query.where('(hero.name LIKE :term OR hero.nickname LIKE :term)', {
+      query.andWhere('(hero.name LIKE :term OR hero.nickname LIKE :term)', {
         term: `%${escapeLike(search)}%`,
       });
+    }
+
+    if (isActive !== undefined) {
+      query.andWhere('hero.isActive = :isActive', { isActive });
     }
 
     const [entities, total] = await query.getManyAndCount();

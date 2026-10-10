@@ -6,6 +6,11 @@ import {
 } from '../../config/env.validation.js';
 import { FileStorage } from '../../shared/storage/file-storage.js';
 import { UploadsModule } from '../uploads/uploads.module.js';
+import {
+  AI_PROVIDER_INFO,
+  CLOUDFLARE_PROVIDER_INFO,
+  DEMO_PROVIDER_INFO,
+} from './application/ai-provider-info.js';
 import { AvatarGenerator, HeroIdeaGenerator } from './application/ports.js';
 import { SuggestHeroUseCase } from './application/suggest-hero.use-case.js';
 import { CloudflareAiClient } from './infrastructure/cloudflare/cloudflare-ai.client.js';
@@ -26,6 +31,12 @@ const isCloudflare = (config: Config) =>
   imports: [UploadsModule],
   controllers: [HeroSuggestionsController],
   providers: [
+    {
+      provide: AI_PROVIDER_INFO,
+      inject: [ConfigService],
+      useFactory: (config: Config) =>
+        isCloudflare(config) ? CLOUDFLARE_PROVIDER_INFO : DEMO_PROVIDER_INFO,
+    },
     {
       provide: CLOUDFLARE_CLIENT,
       inject: [ConfigService],

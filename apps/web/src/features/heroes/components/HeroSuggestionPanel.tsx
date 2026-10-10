@@ -1,10 +1,20 @@
-import { Button, Group, Paper, Stack, Text, TextInput } from '@mantine/core';
-import { IconSparkles } from '@tabler/icons-react';
-import { useMutation } from '@tanstack/react-query';
+import {
+  ActionIcon,
+  Button,
+  Group,
+  Paper,
+  Stack,
+  Text,
+  TextInput,
+  Tooltip,
+} from '@mantine/core';
+import { IconInfoCircle, IconSparkles } from '@tabler/icons-react';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { getErrorMessage } from '../../../shared/api/error-messages';
 import { notify } from '../../../shared/ui/notify';
 import { heroesApi } from '../api/heroes.api';
+import { aiLimitMessage } from '../lib/ai-limit-message';
 import { HERO_ERROR_MESSAGES } from '../lib/hero-error-messages';
 import type { HeroSuggestion } from '../types';
 import classes from './HeroSuggestionPanel.module.css';
@@ -20,6 +30,12 @@ export function HeroSuggestionPanel({
 }: HeroSuggestionPanelProps) {
   const [idea, setIdea] = useState('');
   const [backstory, setBackstory] = useState<string | null>(null);
+
+  const { data: providerInfo } = useQuery({
+    queryKey: ['hero-suggestions', 'info'],
+    queryFn: heroesApi.suggestionInfo,
+    staleTime: Infinity,
+  });
 
   const suggest = useMutation({
     mutationFn: heroesApi.suggest,
@@ -52,14 +68,13 @@ export function HeroSuggestionPanel({
   return (
     <Paper className={classes.panel}>
       <Stack gap="xs">
-        <Group gap="xs" align="flex-end" wrap="nowrap">
+        <Stack gap="xs">
           <TextInput
             label="Ideia para a IA (opcional)"
             placeholder="Ex.: heroína do sertão que controla raios"
             value={idea}
             onChange={(event) => setIdea(event.currentTarget.value)}
             maxLength={200}
-            style={{ flex: 1 }}
             onKeyDown={(event) => {
               if (event.key === 'Enter') {
                 event.preventDefault();
@@ -67,16 +82,35 @@ export function HeroSuggestionPanel({
               }
             }}
           />
-          <Button
-            variant="gradient"
-            gradient={{ from: 'ember.6', to: 'grape.6', deg: 120 }}
-            leftSection={<IconSparkles size={18} />}
-            onClick={handleSuggest}
-            loading={suggest.isPending}
-          >
-            Sugerir herói com IA
-          </Button>
-        </Group>
+          <Group gap="xs" justify="flex-end" wrap="nowrap">
+            <Button
+              variant="gradient"
+              gradient={{ from: 'ember.6', to: 'grape.6', deg: 120 }}
+              leftSection={<IconSparkles size={18} />}
+              onClick={handleSuggest}
+              loading={suggest.isPending}
+            >
+              Sugerir herói com IA
+            </Button>
+            <Tooltip
+              label={aiLimitMessage(providerInfo)}
+              multiline
+              w={300}
+              withArrow
+              position="top-end"
+              events={{ hover: true, focus: true, touch: true }}
+            >
+              <ActionIcon
+                variant="subtle"
+                color="gray"
+                size={36}
+                aria-label="Limite de uso da IA"
+              >
+                <IconInfoCircle size={20} />
+              </ActionIcon>
+            </Tooltip>
+          </Group>
+        </Stack>
 
         {suggest.isPending && (
           <Text size="xs" c="dimmed">

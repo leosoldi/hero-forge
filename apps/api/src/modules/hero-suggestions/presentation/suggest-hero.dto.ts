@@ -44,3 +44,25 @@ export class HeroSuggestionResponse {
   })
   avatar_url: string | null;
 }
+
+export class AiProviderInfoResponse {
+  @ApiProperty({ enum: ['demo', 'cloudflare'], example: 'cloudflare' })
+  provider: 'demo' | 'cloudflare';
+
+  @ApiProperty({
+    nullable: true,
+    type: Number,
+    example: 100,
+    description:
+      'Estimativa de sugestões por dia no plano gratuito (null = sem limite)',
+  })
+  daily_limit: number | null;
+
+  @ApiProperty({
+    nullable: true,
+    type: String,
+    example: '00:00',
+    description: 'Horário (UTC) em que a cota diária é renovada',
+  })
+  resets_at_utc: string | null;
+}

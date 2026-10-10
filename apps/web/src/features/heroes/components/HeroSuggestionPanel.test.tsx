@@ -93,6 +93,27 @@ describe('Sugerir herói com IA', () => {
     );
   });
 
+  it('shows the daily limit of the AI on the info icon', async () => {
+    server.use(
+      http.get('/api/hero-suggestions/info', () =>
+        HttpResponse.json({
+          provider: 'cloudflare',
+          daily_limit: 100,
+          resets_at_utc: '00:00',
+        }),
+      ),
+    );
+    renderWithProviders(<HeroFormModal opened onClose={vi.fn()} />);
+
+    await userEvent.hover(
+      screen.getByRole('button', { name: 'Limite de uso da IA' }),
+    );
+
+    expect(
+      await screen.findByText(/cerca de 100 sugestões por dia/),
+    ).toBeInTheDocument();
+  });
+
   it('is only offered when creating a hero', () => {
     renderWithProviders(
       <HeroFormModal opened hero={buildHero()} onClose={vi.fn()} />,

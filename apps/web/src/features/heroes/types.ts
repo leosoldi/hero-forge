@@ -40,3 +40,9 @@ export type HeroSuggestion = Omit<HeroInput, 'avatar_url'> & {
   backstory: string;
   avatar_url: string | null;
 };
+
+export interface AiProviderInfo {
+  provider: 'demo' | 'cloudflare';
+  daily_limit: number | null;
+  resets_at_utc: string | null;
+}

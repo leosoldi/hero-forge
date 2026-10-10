@@ -38,6 +38,13 @@ describe('Hero suggestions (e2e, demo provider)', () => {
     await http().get(new URL(hero.avatar_url).pathname).expect(200);
   });
 
+  it('informs the provider in use and its daily limit', async () => {
+    await http()
+      .get('/hero-suggestions/info')
+      .expect(200)
+      .expect({ provider: 'demo', daily_limit: null, resets_at_utc: null });
+  });
+
   it('validates the idea length', async () => {
     await http()
       .post('/hero-suggestions')

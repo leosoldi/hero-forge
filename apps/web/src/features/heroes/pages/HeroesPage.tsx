@@ -16,6 +16,7 @@ import {
   IconShieldPlus,
 } from '@tabler/icons-react';
 import { useState } from 'react';
+import { getErrorMessage } from '../../../shared/api/error-messages';
 import { EmptyState } from '../../../shared/ui/EmptyState';
 import { useHeroesQuery } from '../api/heroes.queries';
 import { HeroActionsMenu } from '../components/HeroActionsMenu';
@@ -32,10 +33,18 @@ import {
   DeactivateHeroDialog,
 } from '../components/HeroStatusDialogs';
 import { dialogHero, useHeroDialogs } from '../hooks/use-hero-dialogs';
+import { HERO_ERROR_MESSAGES } from '../lib/hero-error-messages';
 import type { HeroStatusFilter as Status } from '../types';
 import classes from './HeroesPage.module.css';
 
 const SEARCH_DEBOUNCE_MS = 350;
+
+// Na listagem, um erro de validação vem dos parâmetros da consulta, não de um formulário
+const LIST_ERROR_MESSAGES = {
+  ...HERO_ERROR_MESSAGES,
+  VALIDATION_ERROR:
+    'A API recusou os parâmetros da listagem (busca, filtro ou página).',
+};
 
 const EMPTY_FILTER_MESSAGES: Record<Status, string> = {
   all: 'Nenhum herói',
@@ -61,12 +70,13 @@ export function HeroesPage() {
     setStatus('all');
   };
 
-  const { data, isPending, isError, isFetching, refetch } = useHeroesQuery({
-    page,
-    limit: HEROES_PER_PAGE,
-    search: search || undefined,
-    status,
-  });
+  const { data, error, isPending, isError, isFetching, refetch } =
+    useHeroesQuery({
+      page,
+      limit: HEROES_PER_PAGE,
+      search: search || undefined,
+      status,
+    });
 
   const heroes = data?.data ?? [];
   const dialogs = useHeroDialogs();
@@ -120,7 +130,11 @@ export function HeroesPage() {
           <EmptyState
             icon={<IconAlertTriangle size={32} />}
             title="A forja apagou"
-            description="Não foi possível carregar os heróis. Verifique se a API está em execução."
+            description={getErrorMessage(
+              error,
+              LIST_ERROR_MESSAGES,
+              'Não foi possível carregar os heróis. Tente novamente.',
+            )}
             action={
               <Button variant="light" onClick={() => refetch()}>
                 Tentar novamente

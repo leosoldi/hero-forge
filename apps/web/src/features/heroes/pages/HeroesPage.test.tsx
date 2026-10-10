@@ -203,6 +203,11 @@ describe('HeroesPage', () => {
     renderWithProviders(<HeroesPage />);
 
     expect(await screen.findByText('A forja apagou')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'Não foi possível conectar à API. Verifique se ela está em execução.',
+      ),
+    ).toBeInTheDocument();
 
     await userEvent.click(
       screen.getByRole('button', { name: 'Tentar novamente' }),
@@ -210,5 +215,30 @@ describe('HeroesPage', () => {
     expect(
       await screen.findByRole('heading', { name: 'Hulk' }),
     ).toBeInTheDocument();
+  });
+
+  it('shows the reason when the API answers with an error', async () => {
+    mockHeroesApi(() =>
+      HttpResponse.json(
+        {
+          status_code: 400,
+          code: 'VALIDATION_ERROR',
+          message: 'Invalid request',
+          details: [{ field: 'status', messages: ['invalid'] }],
+        },
+        { status: 400 },
+      ),
+    );
+
+    renderWithProviders(<HeroesPage />);
+
+    expect(
+      await screen.findByText(
+        'A API recusou os parâmetros da listagem (busca, filtro ou página).',
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(/Verifique se ela está em execução/),
+    ).not.toBeInTheDocument();
   });
 });

@@ -14,6 +14,7 @@ const STATUS_BY_DOMAIN_ERROR: Record<DomainErrorType, HttpStatus> = {
   [DomainErrorType.NotFound]: HttpStatus.NOT_FOUND,
   [DomainErrorType.Conflict]: HttpStatus.CONFLICT,
   [DomainErrorType.Validation]: HttpStatus.UNPROCESSABLE_ENTITY,
+  [DomainErrorType.Unavailable]: HttpStatus.SERVICE_UNAVAILABLE,
 };
 
 @Catch()

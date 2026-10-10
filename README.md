@@ -91,4 +91,5 @@ A aplicação abre em `http://localhost:5173`. Mais detalhes em [`apps/web/READM
 - [x] Front-end: listagem, busca e paginação
 - [x] Front-end: modais de criação (com prévia ao vivo), edição, detalhes e confirmação
 - [ ] Dockerização completa
-- [ ] Extra: geração de avatar e contexto do herói com IA
+- [x] Upload de imagem do avatar (link ou arquivo)
+- [x] Extra: "Sugerir herói com IA" (LLM + geração de imagem, com modo demonstração offline)

@@ -34,9 +34,10 @@ import {
   heroFormSchema,
   type HeroFormValues,
 } from '../lib/hero-form.schema';
-import type { Hero } from '../types';
+import type { Hero, HeroSuggestion } from '../types';
 import { AvatarField } from './AvatarField';
 import { HeroCard } from './HeroCard';
+import { HeroSuggestionPanel } from './HeroSuggestionPanel';
 import classes from './HeroFormModal.module.css';
 
 const UNIVERSE_SUGGESTIONS = [
@@ -136,6 +137,23 @@ function HeroForm({ hero, isSaving, onCancel, onSubmit }: HeroFormProps) {
   });
 
   const [uploading, setUploading] = useState(false);
+  const [suggesting, setSuggesting] = useState(false);
+
+  const applySuggestion = (suggestion: HeroSuggestion) => {
+    const options = { shouldValidate: true, shouldDirty: true };
+    form.setValue('name', suggestion.name, options);
+    form.setValue('nickname', suggestion.nickname, options);
+    form.setValue(
+      'date_of_birth',
+      toDateInputValue(suggestion.date_of_birth),
+      options,
+    );
+    form.setValue('universe', suggestion.universe, options);
+    form.setValue('main_power', suggestion.main_power, options);
+    if (suggestion.avatar_url) {
+      form.setValue('avatar_url', suggestion.avatar_url, options);
+    }
+  };
   const values = useWatch({ control: form.control });
   const { errors } = form.formState;
 
@@ -159,6 +177,12 @@ function HeroForm({ hero, isSaving, onCancel, onSubmit }: HeroFormProps) {
     >
       <div className={classes.layout}>
         <Stack gap="md">
+          {!hero && (
+            <HeroSuggestionPanel
+              onSuggested={applySuggestion}
+              onLoadingChange={setSuggesting}
+            />
+          )}
           <TextInput
             label="Nome completo"
             withAsterisk
@@ -240,7 +264,11 @@ function HeroForm({ hero, isSaving, onCancel, onSubmit }: HeroFormProps) {
         <Button variant="default" onClick={onCancel} disabled={isSaving}>
           Cancelar
         </Button>
-        <Button type="submit" loading={isSaving} disabled={uploading}>
+        <Button
+          type="submit"
+          loading={isSaving}
+          disabled={uploading || suggesting}
+        >
           {hero ? 'Salvar alterações' : 'Forjar herói'}
         </Button>
       </Group>

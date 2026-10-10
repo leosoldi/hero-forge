@@ -8,6 +8,7 @@ import {
   IsUrl,
   Max,
   Min,
+  ValidateIf,
   validateSync,
 } from 'class-validator';
 
@@ -24,6 +25,14 @@ const toBoolean = ({
   obj: Record<string, unknown>;
   key: string;
 }) => obj[key] === true || obj[key] === 'true';
+
+export enum AiProvider {
+  Demo = 'demo',
+  Cloudflare = 'cloudflare',
+}
+
+const usesCloudflare = (env: EnvironmentVariables) =>
+  env.AI_PROVIDER === AiProvider.Cloudflare;
 
 export class EnvironmentVariables {
   @IsEnum(NodeEnv)
@@ -68,6 +77,27 @@ export class EnvironmentVariables {
 
   @IsUrl({ require_tld: false, require_protocol: true })
   PUBLIC_UPLOADS_URL: string = 'http://localhost:3333/uploads';
+
+  @IsEnum(AiProvider)
+  AI_PROVIDER: AiProvider = AiProvider.Demo;
+
+  @ValidateIf(usesCloudflare)
+  @IsString()
+  @IsNotEmpty()
+  CLOUDFLARE_ACCOUNT_ID?: string;
+
+  @ValidateIf(usesCloudflare)
+  @IsString()
+  @IsNotEmpty()
+  CLOUDFLARE_API_TOKEN?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  CLOUDFLARE_TEXT_MODEL: string = '@cf/meta/llama-3.3-70b-instruct-fp8-fast';
+
+  @IsString()
+  @IsNotEmpty()
+  CLOUDFLARE_IMAGE_MODEL: string = '@cf/black-forest-labs/flux-1-schnell';
 }
 
 export function validateEnv(

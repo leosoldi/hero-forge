@@ -35,3 +35,8 @@ export interface ListHeroesParams {
   limit: number;
   search?: string;
 }
+
+export type HeroSuggestion = Omit<HeroInput, 'avatar_url'> & {
+  backstory: string;
+  avatar_url: string | null;
+};

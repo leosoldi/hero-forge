@@ -12,7 +12,7 @@ import { GlobalExceptionFilter } from './global-exception.filter.js';
 describe('GlobalExceptionFilter', () => {
   const filter = new GlobalExceptionFilter();
   const json = vi.fn();
-  const status = vi.fn(() => ({ json }));
+  const status = vi.fn((_code: number) => ({ json }));
   const host = {
     switchToHttp: () => ({ getResponse: () => ({ status }) }),
   } as unknown as ArgumentsHost;

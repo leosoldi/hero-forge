@@ -23,7 +23,8 @@
     "migration:run": "nest build && npm run typeorm -- migration:run",
     "migration:revert": "nest build && npm run typeorm -- migration:revert",
     "migration:show": "nest build && npm run typeorm -- migration:show",
-    "schema:check": "nest build && npm run typeorm -- schema:log"
+    "schema:check": "nest build && npm run typeorm -- schema:log",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@nestjs/common": "^12.0.1",

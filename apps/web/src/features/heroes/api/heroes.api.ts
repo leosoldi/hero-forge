@@ -2,6 +2,7 @@ import { httpClient } from '../../../shared/api/http-client';
 import type {
   Hero,
   HeroInput,
+  HeroSuggestion,
   ListHeroesParams,
   PaginatedHeroes,
 } from '../types';
@@ -24,4 +25,7 @@ export const heroesApi = {
   deactivate: (id: string) => httpClient.delete<Hero>(`/heroes/${id}`),
 
   activate: (id: string) => httpClient.patch<Hero>(`/heroes/${id}/activate`),
+
+  suggest: (idea?: string) =>
+    httpClient.post<HeroSuggestion>('/hero-suggestions', idea ? { idea } : {}),
 };

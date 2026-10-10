@@ -1,0 +1,24 @@
+.panel {
+  padding: var(--mantine-spacing-sm);
+  border: 1px solid rgba(255, 106, 43, 0.35);
+  border-radius: var(--mantine-radius-md);
+  background:
+    linear-gradient(120deg, rgba(255, 106, 43, 0.08), rgba(190, 75, 219, 0.08)),
+    var(--mantine-color-dark-8);
+}
+
+.backstory {
+  padding: var(--mantine-spacing-xs) var(--mantine-spacing-sm);
+  border-left: 2px solid var(--mantine-color-ember-6);
+  background: rgba(16, 14, 15, 0.5);
+  border-radius: 0 var(--mantine-radius-sm) var(--mantine-radius-sm) 0;
+}
+
+.backstoryLabel {
+  margin-bottom: 2px;
+  font-family: var(--mantine-font-family-monospace);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mantine-color-ember-4);
+}

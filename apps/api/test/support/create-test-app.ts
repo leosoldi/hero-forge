@@ -1,12 +1,11 @@
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import { Test } from '@nestjs/testing';
-import type { App } from 'supertest/types.js';
 import { DataSource } from 'typeorm';
 import { AppModule } from '../../src/app.module.js';
 import { setupApp } from '../../src/app.setup.js';
 
 export interface TestApp {
-  app: NestExpressApplication<App>;
+  app: NestExpressApplication;
   dataSource: DataSource;
 }
 
@@ -15,7 +14,7 @@ export async function createTestApp(): Promise<TestApp> {
     imports: [AppModule],
   }).compile();
 
-  const app = moduleRef.createNestApplication<NestExpressApplication<App>>();
+  const app = moduleRef.createNestApplication<NestExpressApplication>();
   setupApp(app);
   await app.init();
 

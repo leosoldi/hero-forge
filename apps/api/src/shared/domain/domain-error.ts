@@ -2,6 +2,7 @@ export enum DomainErrorType {
   NotFound = 'NOT_FOUND',
   Conflict = 'CONFLICT',
   Validation = 'VALIDATION',
+  Unavailable = 'UNAVAILABLE',
 }
 
 export abstract class DomainError extends Error {

@@ -30,4 +30,4 @@ Thumbs.db
 .ref/
 
 # Uploaded files (local storage)
-storage/
+/apps/api/storage/

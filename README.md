@@ -65,7 +65,7 @@ cp apps/api/.env.example apps/api/.env
 npm run api:dev
 ```
 
-A API sobe em `http://localhost:3333`. Para conferir se ela está conectada ao banco: `GET http://localhost:3333/health`.
+A API sobe em `http://localhost:3333` e a documentação interativa (Swagger) fica em `http://localhost:3333/docs`.
 
 Mais detalhes (variáveis de ambiente, scripts e endpoints) em [`apps/api/README.md`](apps/api/README.md).
 
@@ -75,8 +75,8 @@ Mais detalhes (variáveis de ambiente, scripts e endpoints) em [`apps/api/README
 - [x] API: setup (configuração validada, conexão com o banco, health check)
 - [x] API: domínio do herói, entidade do banco e migration
 - [x] API: repositório e casos de uso
-- [ ] API: endpoints REST, validação e tratamento de erros
-- [ ] API: documentação (Swagger) e testes
+- [x] API: endpoints REST, DTOs com validação, tratamento de erros e Swagger
+- [x] API: testes unitários e de integração
 - [ ] Front-end: listagem, busca, paginação e modais
 - [ ] Dockerização completa
 - [ ] Extra: geração de avatar e contexto do herói com IA

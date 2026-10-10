@@ -9,6 +9,7 @@ import { UpdateHeroUseCase } from './application/use-cases/update-hero.use-case.
 import { HeroRepository } from './domain/hero.repository.js';
 import { HeroOrmEntity } from './infrastructure/persistence/hero.orm-entity.js';
 import { TypeOrmHeroRepository } from './infrastructure/persistence/typeorm-hero.repository.js';
+import { HeroesController } from './presentation/heroes.controller.js';
 
 type UseCaseClass = new (heroRepository: HeroRepository) => unknown;
 
@@ -29,6 +30,7 @@ const useCaseProviders: Provider[] = useCases.map((UseCase) => ({
 
 @Module({
   imports: [TypeOrmModule.forFeature([HeroOrmEntity])],
+  controllers: [HeroesController],
   providers: [
     { provide: HeroRepository, useClass: TypeOrmHeroRepository },
     ...useCaseProviders,

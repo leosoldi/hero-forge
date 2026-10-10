@@ -1,0 +1,49 @@
+# Requisições de exemplo para a extensão REST Client do VS Code.
+# Clique em "Send Request" acima de cada bloco.
+
+@baseUrl = http://localhost:3333
+@heroId = cole-aqui-o-id-retornado-na-criacao
+
+### Health check
+GET {{baseUrl}}/health
+
+### Criar herói
+POST {{baseUrl}}/heroes
+Content-Type: application/json
+
+{
+  "name": "Robert Bruce Banner",
+  "nickname": "Hulk",
+  "date_of_birth": "1962-04-10",
+  "universe": "Marvel",
+  "main_power": "Force",
+  "avatar_url": "https://cdn.pixabay.com/photo/2024/05/07/00/59/hulk-8744607_1280.jpg"
+}
+
+### Listar heróis (página 1, 10 por página)
+GET {{baseUrl}}/heroes?page=1&limit=10
+
+### Buscar por nome ou nome de guerra
+GET {{baseUrl}}/heroes?search=hulk
+
+### Detalhar herói
+GET {{baseUrl}}/heroes/{{heroId}}
+
+### Editar herói
+PUT {{baseUrl}}/heroes/{{heroId}}
+Content-Type: application/json
+
+{
+  "name": "Robert Bruce Banner",
+  "nickname": "The Incredible Hulk",
+  "date_of_birth": "1962-04-10",
+  "universe": "Marvel",
+  "main_power": "Gamma strength",
+  "avatar_url": "https://cdn.pixabay.com/photo/2024/05/07/00/59/hulk-8744607_1280.jpg"
+}
+
+### Excluir herói (exclusão lógica)
+DELETE {{baseUrl}}/heroes/{{heroId}}
+
+### Reativar herói
+PATCH {{baseUrl}}/heroes/{{heroId}}/activate

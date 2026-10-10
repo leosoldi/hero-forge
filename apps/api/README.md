@@ -68,18 +68,24 @@ Ao iniciar, a API aplica automaticamente as migrations pendentes. Os comandos ac
 src/
 ├── config/              # Validação das variáveis de ambiente
 ├── database/            # Conexão, data source da CLI e migrations
-├── shared/domain/       # Base dos erros de domínio
+├── shared/domain/       # Base dos erros de domínio e tipos de paginação
 └── modules/
     ├── health/          # GET /health
     └── heroes/
-        ├── domain/                       # Entidade Hero e regras de negócio (TypeScript puro)
-        └── infrastructure/persistence/   # Entidade do TypeORM e mapper domínio ⇄ banco
+        ├── domain/                       # Entidade Hero, regras de negócio e contrato do repositório
+        ├── application/use-cases/        # Um caso de uso por ação (criar, listar, detalhar, editar, desativar, ativar)
+        ├── infrastructure/persistence/   # Entidade do TypeORM, mapper e implementação do repositório
+        └── heroes.module.ts              # Composition root: liga o contrato à implementação
+test/
+├── support/             # Factory de heróis e repositório em memória (dublê de testes)
+└── heroes/              # Testes de integração do repositório com o MySQL
 ```
 
-A entidade de domínio (`Hero`) não conhece o TypeORM nem o NestJS. A tradução entre ela e a tabela fica no `HeroMapper`.
+- O **domínio** não conhece NestJS nem TypeORM. O repositório é uma classe abstrata (`HeroRepository`) que serve ao mesmo tempo de contrato e de token de injeção.
+- Os **casos de uso** recebem o repositório pelo construtor e também não dependem do framework. O `HeroesModule` os instancia via `useFactory`.
+- A **implementação** (`TypeOrmHeroRepository`) é a única peça que fala com o banco, traduzindo com o `HeroMapper`.
 
-## Endpoints
+## Testes
 
-| Método | Rota      | Descrição                                |
-| ------ | --------- | ---------------------------------------- |
-| `GET`  | `/health` | Verifica se a API e o banco estão no ar  |
+- **Unitários** (`*.spec.ts`, ao lado do código): domínio e casos de uso usam o `InMemoryHeroRepository`, então rodam sem banco e em milissegundos.
+- **Integração** (`test/**/*.e2e-spec.ts`): rodam contra o MySQL real, no banco `hero_forge_test`. Os testes fixam o fuso `America/Sao_Paulo` para garantir que datas não "voltam um dia" fora do UTC.

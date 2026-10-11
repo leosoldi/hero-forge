@@ -21,8 +21,10 @@
     "api:dev": "npm run start:dev -w apps/api",
     "api:test": "npm run test -w apps/api",
     "api:test:e2e": "npm run test:e2e -w apps/api",
+    "api:test:cov": "npm run test:cov -w apps/api",
     "web:dev": "npm run dev -w apps/web",
     "web:test": "npm run test -w apps/web",
+    "web:test:cov": "npm run test:cov -w apps/web",
     "web:build": "npm run build -w apps/web"
   }
 }

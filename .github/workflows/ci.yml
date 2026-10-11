@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  api:
+    name: API (lint, tipos, testes unitários e de integração)
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: hero_forge_test
+          MYSQL_USER: hero_forge
+          MYSQL_PASSWORD: hero_forge
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot --silent"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: cp apps/api/.env.example apps/api/.env
+      - run: npm run lint -w apps/api
+      - run: npm run typecheck -w apps/api
+      - name: Testes unitários com cobertura
+        run: npm run test:cov -w apps/api
+      - name: Testes de integração (MySQL real)
+        run: npm run test:e2e -w apps/api
+      - run: npm run build -w apps/api
+
+  web:
+    name: Front-end (lint, build e testes)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run lint -w apps/web
+      - name: Typecheck e build
+        run: npm run build -w apps/web
+      - name: Testes com cobertura
+        run: npm run test:cov -w apps/web
+
+  docker:
+    name: Docker (sobe a stack completa e testa)
+    needs: [api, web]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: cp .env.example .env
+      - name: Build e subida com healthchecks
+        run: docker compose up -d --build --wait --wait-timeout 300
+      - name: Smoke test
+        run: |
+          curl -fsS http://localhost:3333/health
+          curl -fsS "http://localhost:8080/api/heroes?status=active" > /dev/null
+          curl -fsS http://localhost:8080/ | grep -q '<div id="root">'
+      - name: Logs em caso de falha
+        if: failure()
+        run: docker compose logs
+      - name: Derruba a stack
+        if: always()
+        run: docker compose down -v

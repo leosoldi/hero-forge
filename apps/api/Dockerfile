@@ -23,6 +23,8 @@ WORKDIR /app
 
 COPY --from=prod-deps --chown=node:node /app ./
 COPY --from=build --chown=node:node /app/apps/api/dist ./apps/api/dist
+# Dados de exemplo opcionais (node dist/database/seeds/run-seed.js)
+COPY --from=build --chown=node:node /app/apps/api/seed ./apps/api/seed
 
 WORKDIR /app/apps/api
 # Criada pelo usuário da aplicação para que o volume de uploads herde a permissão de escrita

@@ -71,7 +71,7 @@ Todos os dados aparecem no modal, mas só os seis campos pedidos são editáveis
 hero-forge/
 ├── .github/workflows/  # CI: lint, typecheck, testes e subida da stack em Docker
 ├── apps/
-│   ├── api/            # API REST (NestJS) + Dockerfile
+│   ├── api/            # API REST (NestJS) + Dockerfile e seed/ (heróis de exemplo)
 │   └── web/            # Front-end (React + Vite) + Dockerfile e nginx.conf
 ├── docker/
 │   └── mysql/init/     # Scripts executados na primeira subida do MySQL
@@ -121,6 +121,7 @@ As portas podem ser trocadas no `.env` (`WEB_PORT`, `API_PORT` e `MYSQL_PORT`).
 | `npm run docker:up`   | Faz o build e sobe MySQL, API e front        |
 | `npm run docker:ps`   | Mostra o estado e a saúde de cada container  |
 | `npm run docker:logs` | Acompanha os logs da API e do front          |
+| `npm run docker:seed` | Popula o banco com os heróis de exemplo      |
 | `npm run docker:down` | Para e remove os containers (os dados ficam) |
 
 ### Opção 2: desenvolvimento (com _hot reload_)
@@ -171,6 +172,20 @@ npm run web:dev
 
 A aplicação abre em `http://localhost:5173`. Mais detalhes em [`apps/web/README.md`](apps/web/README.md).
 
+### Dados de exemplo (opcional, vale para as duas opções)
+
+O sistema começa vazio. Para ver a listagem já preenchida, com paginação, heróis inativos e avatares gerados pela IA, rode:
+
+```bash
+# Opção 1 (Docker)
+docker compose exec api node dist/database/seeds/run-seed.js
+
+# Opção 2 (desenvolvimento)
+npm run db:seed
+```
+
+São 13 heróis (2 inativos), criados pelas mesmas regras de domínio da API. Os dados ficam em [`apps/api/seed/heroes.json`](apps/api/seed/heroes.json) e os avatares em `apps/api/seed/avatars`. O comando só popula um banco vazio: se já houver heróis, ele avisa e não altera nada (use `--force` para adicionar mesmo assim).
+
 ### IA generativa (opcional, vale para as duas opções)
 
 Por padrão a API roda com `AI_PROVIDER=demo`: o botão "Sugerir herói com IA" funciona offline, com sugestões e avatares gerados localmente.
@@ -199,11 +214,11 @@ npm run web:test:cov    # testes do front com cobertura
 
 | Suíte                     | Testes | Cobertura (linhas / desvios)                  |
 | ------------------------- | ------ | --------------------------------------------- |
-| API: unitários            | 119    | 96% / 89%                                     |
+| API: unitários            | 126    | 96% / 90%                                     |
 | API: integração (MySQL)   | 43     | rotas, repositório e uploads de ponta a ponta |
 | Front: componentes/fluxos | 68     | 96% / 92%                                     |
 
-- **Unitários da API** cobrem domínio, casos de uso, mappers, presenters, DTOs e adapters da IA, usando um repositório em memória no lugar do banco.
+- **Unitários da API** cobrem domínio, casos de uso, mappers, presenters, DTOs, adapters da IA e o seed, usando um repositório em memória no lugar do banco.
 - **Integração da API** sobe a aplicação Nest de verdade e testa as rotas com Supertest contra um MySQL real, incluindo regressões de fuso horário (datas que "voltavam um dia" fora do UTC).
 - **Front** testa componentes e fluxos completos (listar, buscar, filtrar, criar, editar, excluir, reativar) com Testing Library e a API simulada pelo MSW.
 

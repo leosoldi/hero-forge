@@ -45,6 +45,7 @@ As variáveis são validadas na inicialização: se alguma estiver ausente ou in
 | `npm run migration:run`    | Aplica as migrations pendentes                 |
 | `npm run migration:revert` | Desfaz a última migration aplicada             |
 | `npm run schema:check`     | Compara entidades e banco (deve estar em dia)  |
+| `npm run seed`             | Popula um banco vazio com os heróis de exemplo |
 
 Os testes de integração usam o banco `hero_forge_test`, isolado do banco de desenvolvimento.
 

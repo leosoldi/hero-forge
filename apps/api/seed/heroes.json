@@ -1,0 +1,108 @@
+[
+  {
+    "name": "Luiza Silva Santos",
+    "nickname": "Echo",
+    "date_of_birth": "1985-02-12",
+    "universe": "Nexarion",
+    "main_power": "Resonância Temporal",
+    "avatar": "echo.webp"
+  },
+  {
+    "name": "Ariana Olivia",
+    "nickname": "Velox",
+    "date_of_birth": "1992-07-19",
+    "universe": "Terra Nova",
+    "main_power": "Super Velocidade",
+    "avatar": "velox.webp"
+  },
+  {
+    "name": "Magus",
+    "nickname": "Força Bruta",
+    "date_of_birth": "2002-06-19",
+    "universe": "Planeta Magus",
+    "main_power": "Super Força",
+    "avatar": "forca-bruta.webp",
+    "is_active": false
+  },
+  {
+    "name": "Luisa Maria Silva",
+    "nickname": "Florária",
+    "date_of_birth": "1980-02-12",
+    "universe": "Verdantia",
+    "main_power": "Controle sobre plantas",
+    "avatar": "floraria.webp"
+  },
+  {
+    "name": "Maria Luiza Barbosa",
+    "nickname": "Martela",
+    "date_of_birth": "1980-02-12",
+    "universe": "Eridoria",
+    "main_power": "Manipulação de Metais",
+    "avatar": "martela.webp"
+  },
+  {
+    "name": "João Pedro Silva",
+    "nickname": "Fuzil",
+    "date_of_birth": "1980-02-12",
+    "universe": "TerraNova",
+    "main_power": "Armadura tática",
+    "avatar": "fuzil.webp"
+  },
+  {
+    "name": "Leonardo Santos",
+    "nickname": "Ameba",
+    "date_of_birth": "1980-02-12",
+    "universe": "Bioterra",
+    "main_power": "Morfologia Amoebiana",
+    "avatar": "ameba.webp"
+  },
+  {
+    "name": "Luís Felipe Santos",
+    "nickname": "Pulso",
+    "date_of_birth": "1980-02-12",
+    "universe": "Nova Terra",
+    "main_power": "Controle eletromagnético",
+    "avatar": "pulso.webp"
+  },
+  {
+    "name": "Luisa Helena Santos",
+    "nickname": "Crona",
+    "date_of_birth": "1980-01-01",
+    "universe": "Relógio",
+    "main_power": "controle do tempo",
+    "avatar": "crona.webp"
+  },
+  {
+    "name": "Eduardo Silva",
+    "nickname": "Sombra",
+    "date_of_birth": "1980-02-15",
+    "universe": "Tenebrous",
+    "main_power": "Manipulação de energia escura",
+    "avatar": "sombra.webp"
+  },
+  {
+    "name": "Luiz Felipe Oliveira",
+    "nickname": "Verde",
+    "date_of_birth": "1980-02-12",
+    "universe": "Terra Sombria",
+    "main_power": "Controle de gosma tóxica",
+    "avatar": "verde.webp"
+  },
+  {
+    "name": "Luís Felipe Oliveira",
+    "nickname": "Lobis",
+    "date_of_birth": "1980-02-12",
+    "universe": "Luminaria",
+    "main_power": "Transformação em lobo",
+    "avatar": "lobis.webp"
+  },
+  {
+    "name": "Luana Maria Silva",
+    "nickname": "Fungo",
+    "date_of_birth": "1985-02-12",
+    "universe": "Elyria",
+    "main_power": "Controle de decomposição",
+    "avatar": "fungo.webp",
+    "is_active": false
+  }
+]

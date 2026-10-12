@@ -89,6 +89,13 @@ hero-forge/
 
 ## Como rodar
 
+Primeiro, baixe o projeto:
+
+```bash
+git clone https://github.com/leosoldi/hero-forge.git
+cd hero-forge
+```
+
 Há dois jeitos de rodar o projeto. Use **um ou outro**, porque os dois usam a porta `3333`.
 
 ### Opção 1: tudo em Docker (mais rápido para avaliar)

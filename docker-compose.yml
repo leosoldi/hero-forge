@@ -37,8 +37,11 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-    # Reaproveita as chaves da IA do .env da API, se existir. Sem ele, a IA roda em modo demonstração.
+    # Chaves da IA: lidas do .env da raiz (opção mais simples no Docker) ou do .env
+    # da API, que tem prioridade. Sem nenhuma delas, a IA roda em modo demonstração.
     env_file:
+      - path: .env
+        required: false
       - path: apps/api/.env
         required: false
     # Valores do ambiente Docker: têm prioridade sobre o env_file

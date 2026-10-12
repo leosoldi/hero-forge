@@ -23,6 +23,7 @@ Plataforma de gestão de heróis: cadastre, liste, edite, desative e reative her
   - Funciona sem chave nenhuma no **modo demonstração** (padrão), para quem avalia testar na hora.
   - Com a chave gratuita da Cloudflare, usa a IA real. O plano gratuito rende cerca de **100 sugestões por dia** (renova às 21h de Brasília); um ícone de informação ao lado do botão mostra esse limite.
   - Os provedores ficam atrás das portas `HeroIdeaGenerator` e `AvatarGenerator`: trocar de IA é criar um adapter, sem mexer em caso de uso nem no front.
+- **Heróis de exemplo prontos**: um comando popula o banco com 13 heróis (2 inativos) e avatares gerados pela IA, para avaliar a listagem, a paginação e os inativos sem cadastrar nada à mão.
 - **Arquitetura em camadas** (domínio, casos de uso, infraestrutura, apresentação) com inversão de dependência, erros de domínio padronizados e documentação Swagger.
 - **Testes** unitários e de integração na API (contra MySQL real) e testes de componente no front com MSW.
 
@@ -97,7 +98,13 @@ cp .env.example .env
 docker compose up -d --build
 ```
 
-O primeiro build leva alguns minutos. Quando terminar:
+O primeiro build leva alguns minutos. Quando os três containers estiverem `healthy` (`docker compose ps`), você pode popular o banco com **13 heróis de exemplo** (2 inativos, com avatares gerados pela IA) para não começar com a tela vazia:
+
+```bash
+docker compose exec api node dist/database/seeds/run-seed.js
+```
+
+Endereços:
 
 | Serviço   | Endereço                   |
 | --------- | -------------------------- |
@@ -112,7 +119,7 @@ Como é montado:
 
 - **API**: build em múltiplos estágios (compila com as dependências de desenvolvimento, e a imagem final leva só o `dist` e as dependências de produção). Roda com o usuário `node`, sem privilégios de root. As imagens enviadas ficam no volume `uploads_data`.
 - **Front**: o Vite gera os arquivos estáticos e o **nginx** os serve. O próprio nginx repassa `/api` e `/uploads` para a API, o mesmo contrato do proxy do Vite em desenvolvimento, então o front não precisa saber o endereço da API.
-- **IA**: sem configuração, roda em modo demonstração. Se o arquivo `apps/api/.env` existir, as chaves da Cloudflare dele são reaproveitadas (veja "IA generativa" abaixo).
+- **IA**: sem configuração, roda em modo demonstração. Para a IA real, basta descomentar as chaves da Cloudflare no `.env` da raiz (veja "IA generativa" abaixo). Se existir um `apps/api/.env`, ele também é lido e tem prioridade.
 
 As portas podem ser trocadas no `.env` (`WEB_PORT`, `API_PORT` e `MYSQL_PORT`).
 
@@ -158,7 +165,7 @@ cp apps/api/.env.example apps/api/.env
 npm run api:dev
 ```
 
-A API sobe em `http://localhost:3333` e a documentação interativa (Swagger) fica em `http://localhost:3333/docs`.
+A API sobe em `http://localhost:3333` e a documentação interativa (Swagger) fica em `http://localhost:3333/docs`. Para popular o banco com os heróis de exemplo, rode `npm run db:seed` em outro terminal.
 
 Mais detalhes (variáveis de ambiente, scripts e endpoints) em [`apps/api/README.md`](apps/api/README.md).
 
@@ -190,7 +197,7 @@ São 13 heróis (2 inativos), criados pelas mesmas regras de domínio da API. Os
 
 Por padrão a API roda com `AI_PROVIDER=demo`: o botão "Sugerir herói com IA" funciona offline, com sugestões e avatares gerados localmente.
 
-Para usar a IA real, gratuita, crie uma conta na [Cloudflare](https://dash.cloudflare.com), pegue o **Account ID** e um **API Token** do Workers AI e preencha no `apps/api/.env`:
+Para usar a IA real, gratuita, crie uma conta na [Cloudflare](https://dash.cloudflare.com) e pegue o **Account ID** e um **API Token** do Workers AI. As três variáveis são as mesmas nas duas opções; muda só o arquivo:
 
 ```env
 AI_PROVIDER=cloudflare
@@ -198,7 +205,10 @@ CLOUDFLARE_ACCOUNT_ID=seu-account-id
 CLOUDFLARE_API_TOKEN=seu-token
 ```
 
-Reinicie a API (`npm run api:dev` ou `docker compose up -d api`). O passo a passo e os detalhes do endpoint estão em [`apps/api/README.md`](apps/api/README.md#sugestão-de-herói-com-ia-generativa).
+- **Opção 1 (Docker):** no `.env` da raiz as linhas já estão lá, comentadas. Descomente, preencha e aplique com `docker compose up -d`.
+- **Opção 2 (desenvolvimento):** preencha no `apps/api/.env` e reinicie o `npm run api:dev`.
+
+As chaves ficam só na API e nunca vão para o front nem para o Git (os arquivos `.env` são ignorados). O passo a passo e os detalhes do endpoint estão em [`apps/api/README.md`](apps/api/README.md#sugestão-de-herói-com-ia-generativa).
 
 ## Testes
 
